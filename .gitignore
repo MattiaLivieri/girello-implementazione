@@ -1,0 +1,18 @@
+# Credenziali locali; i modelli .example restano tracciabili
+.env
+.env.*
+!.env.example
+!.env.*.example
+ctfd.env
+secrets/
+
+# Dati e pacchetti generati nella directory principale
+/data/
+/backups/
+/logs/
+/artifacts/
+
+# File temporanei dell'editor
+*.swp
+*.swo
+*~
