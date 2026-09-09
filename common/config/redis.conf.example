@@ -1,0 +1,14 @@
+# Modello per /srv/girello/secrets/redis.conf.
+# L'ascolto riguarda il container, senza pubblicazione della porta sul Master.
+bind 0.0.0.0
+protected-mode yes
+port 6379
+
+# Conserva i dati nella directory collegata al Master.
+dir /data
+appendonly yes
+appendfsync everysec
+
+# Inserire lo stesso valore di CTFD_REDIS_PASSWORD nel file ctfd.env.
+# Redis legge un valore letterale: non sostituisce variabili di ambiente.
+requirepass INSERIRE_LA_PASSWORD_REDIS
