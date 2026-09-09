@@ -57,3 +57,7 @@ reali e documentazione.
 
 Credenziali, dati dei servizi, backup, log delle sessioni e pacchetti
 generati vengono conservati separatamente dalla repository.
+
+
+Le istruzioni per predisporre il Master e utilizzare i profili sono disponibili
+in [Preparazione e utilizzo del Master](common/README.md).
