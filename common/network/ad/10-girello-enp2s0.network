@@ -1,0 +1,32 @@
+# Attack & Defense: seconda Ethernet collegata al segmento del Team 2.
+
+[Match]
+# Identifica la seconda porta del Master.
+Name=enp2s0
+MACAddress=00:1e:06:45:a4:85
+
+[Link]
+# Attiva la porta quando applica il profilo.
+ActivationPolicy=up
+
+# Il controllo wait-online non deve attendere questa rete.
+RequiredForOnline=no
+
+[Network]
+# Disabilita DHCP e indirizzi link-local; ignora gli annunci IPv6 dei router.
+DHCP=no
+LinkLocalAddressing=no
+IPv6AcceptRA=no
+
+# Predispone la configurazione anche con il cavo scollegato.
+ConfigureWithoutCarrier=yes
+
+# Accesso del Team 2 al portale CTFd.
+Address=10.77.2.1/24
+
+# Ingresso dell'applicazione di gara A&D.
+Address=10.77.2.2/24
+
+# Ingresso del proxy verso i servizi avversari del Team 1.
+Address=10.77.2.3/24
+

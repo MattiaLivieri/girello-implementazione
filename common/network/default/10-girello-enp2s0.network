@@ -1,0 +1,10 @@
+# Profilo default: seconda Ethernet del Master.
+
+[Match]
+# Il file si applica alla porta con questo nome e questo MAC.
+Name=enp2s0
+MACAddress=00:1e:06:45:a4:85
+
+[Link]
+# Anche questa porta resta fuori dalla gestione di networkd.
+Unmanaged=yes

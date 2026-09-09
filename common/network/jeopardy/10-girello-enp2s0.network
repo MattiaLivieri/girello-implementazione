@@ -1,0 +1,20 @@
+# Jeopardy: seconda Ethernet non utilizzata.
+
+[Match]
+# Identifica la seconda porta del Master.
+Name=enp2s0
+MACAddress=00:1e:06:45:a4:85
+
+[Link]
+# Mantiene la porta disabilitata mentre questo profilo e' attivo.
+ActivationPolicy=always-down
+RequiredForOnline=no
+
+[Network]
+# Non assegna indirizzi statici e disabilita l'autoconfigurazione.
+DHCP=no
+LinkLocalAddressing=no
+IPv6AcceptRA=no
+
+# Consente di completare la configurazione anche senza collegamento.
+ConfigureWithoutCarrier=yes

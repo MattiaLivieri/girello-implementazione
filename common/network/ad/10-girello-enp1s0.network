@@ -1,0 +1,31 @@
+# Attack & Defense: prima Ethernet collegata al segmento del Team 1.
+
+[Match]
+# Identifica la prima porta del Master.
+Name=enp1s0
+MACAddress=00:1e:06:45:a4:84
+
+[Link]
+# Attiva la porta quando applica il profilo.
+ActivationPolicy=up
+
+# Il controllo wait-online non deve attendere questa rete.
+RequiredForOnline=no
+
+[Network]
+# Disabilita DHCP e indirizzi link-local; ignora gli annunci IPv6 dei router.
+DHCP=no
+LinkLocalAddressing=no
+IPv6AcceptRA=no
+
+# Predispone la configurazione anche con il cavo scollegato.
+ConfigureWithoutCarrier=yes
+
+# Accesso del Team 1 al portale CTFd.
+Address=10.77.1.1/24
+
+# Ingresso dell'applicazione di gara A&D.
+Address=10.77.1.2/24
+
+# Ingresso del proxy verso i servizi avversari del Team 2.
+Address=10.77.1.3/24

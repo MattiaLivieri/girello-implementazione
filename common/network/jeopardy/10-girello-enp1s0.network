@@ -1,0 +1,25 @@
+# Jeopardy: prima Ethernet collegata alla LAN del router del laboratorio.
+
+[Match]
+# Identifica la prima porta del Master.
+Name=enp1s0
+MACAddress=00:1e:06:45:a4:84
+
+[Link]
+# Attiva la porta quando applica il profilo.
+ActivationPolicy=up
+
+# Il controllo wait-online non deve attendere questa rete.
+RequiredForOnline=no
+
+[Network]
+# Disabilita DHCP e indirizzi link-local; ignora gli annunci IPv6 dei router.
+DHCP=no
+LinkLocalAddressing=no
+IPv6AcceptRA=no
+
+# Predispone la configurazione anche con il cavo scollegato.
+ConfigureWithoutCarrier=yes
+
+# Indirizzo statico del Master nella rete Jeopardy.
+Address=10.77.10.2/24

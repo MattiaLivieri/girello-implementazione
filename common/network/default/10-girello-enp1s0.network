@@ -1,0 +1,10 @@
+# Profilo default: prima Ethernet del Master.
+
+[Match]
+# Il file si applica alla porta con questo nome e questo MAC.
+Name=enp1s0
+MACAddress=00:1e:06:45:a4:84
+
+[Link]
+# networkd non gestisce la porta: la connessione ordinaria usa NetworkManager.
+Unmanaged=yes
