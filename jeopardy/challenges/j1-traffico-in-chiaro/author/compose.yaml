@@ -1,0 +1,74 @@
+name: girello-j1-build
+
+x-lab: &lab
+  image: girello-j1-author:dev
+  platform: linux/amd64
+  pull_policy: never
+  restart: "no"
+  init: true
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+  networks: [lab]
+
+services:
+  server:
+    <<: *lab
+    command:
+      - server.py
+      - --config
+      - /input/scenario.json
+      - --archive
+      - /input/riservato.zip
+      - --host
+      - 0.0.0.0
+    volumes:
+      - type: bind
+        source: ../../../../artifacts/j1/private
+        target: /input
+        read_only: true
+        bind:
+          create_host_path: false
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/', timeout=2).close()"
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+  capture:
+    <<: *lab
+    depends_on:
+      server:
+        condition: service_healthy
+    command:
+      - capture.py
+      - --config
+      - /input/scenario.json
+      - --archive
+      - /input/riservato.zip
+      - --output
+      - /output
+    cap_add: [NET_RAW, SETUID, SETGID]
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=16m
+    volumes:
+      - type: bind
+        source: ../../../../artifacts/j1/private
+        target: /input
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ../../../../artifacts/j1/capture
+        target: /output
+        bind:
+          create_host_path: false
+
+networks:
+  lab:
+    driver: bridge
+    internal: true
