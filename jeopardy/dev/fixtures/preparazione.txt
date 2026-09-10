@@ -1,0 +1,4 @@
+Girello - verifica del download prima del via
+
+Questo file è un materiale fittizio dell'ambiente locale di sviluppo.
+Serve a verificare che il download sia disponibile mentre gli invii delle flag sono in pausa.

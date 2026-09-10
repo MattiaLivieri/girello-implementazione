@@ -1,86 +1,100 @@
 # Modalità Jeopardy di Girello
 
-Questa directory raccoglie il lavoro sulle quattro challenge del laboratorio
-Jeopardy. Il Master ospita il portale CTFd e distribuisce i materiali;
-ciascuno studente analizza o esegue la propria copia sul PC personale.
+Questa directory contiene le quattro challenge del laboratorio Jeopardy.
+Il Master ospita CTFd e distribuisce i materiali; ciascuno studente
+analizza o esegue la propria copia sul PC personale.
 
 ## Stato del lavoro
 
-È predisposta la struttura delle challenge con le rispettive specifiche
-iniziali. Generatori, applicazioni, pacchetti e verifiche di esecuzione devono
-ancora essere realizzati. La presenza delle directory non costituisce una
-validazione degli esercizi.
+J1 è stata realizzata e verificata sul PC di sviluppo, comprendendo
+generazione dei materiali, soluzione e integrazione nel CTFd locale.
+
+È stata individuata un'intestazione HTTP impropria nelle risposte
+alle risorse pubbliche del server di costruzione. La cattura aggiornata
+e il relativo pacchetto devono essere verificati dopo la correzione.
+
+J2, J3 e J4 contengono le specifiche iniziali. I relativi ambienti,
+artefatti e collaudi devono ancora essere realizzati.
+
+Il caricamento sul Master e la verifica nella rete del laboratorio
+restano attività successive.
 
 ## Organizzazione
 
-| Directory | Contenuto previsto | Distribuzione |
+| Directory | Contenuto | Distribuzione |
 | --- | --- | --- |
-| [challenges/j1-traffico-in-chiaro/](challenges/j1-traffico-in-chiaro/README.md) | Analisi di una cattura di rete | ZIP con PCAP e istruzioni |
-| [challenges/j2-verifica-licenza/](challenges/j2-verifica-licenza/README.md) | Analisi di un verificatore Java | ZIP con JAR e istruzioni |
-| [challenges/j3-portale-universitario/](challenges/j3-portale-universitario/README.md) | Applicazione web locale e autorizzazione dei documenti | Immagine Docker in TAR |
-| [challenges/j4-privilegi-linux/](challenges/j4-privilegi-linux/README.md) | Gestione dei privilegi in un guest Linux | Appliance Debian in OVA |
+| [J1](challenges/j1-traffico-in-chiaro/README.md) | Analisi di traffico HTTP | ZIP con PCAP e istruzioni |
+| [J2](challenges/j2-verifica-licenza/README.md) | Analisi di un verificatore Java | ZIP con JAR e istruzioni |
+| [J3](challenges/j3-portale-universitario/README.md) | Autorizzazione dei documenti in un'applicazione web | Immagine Docker in TAR |
+| [J4](challenges/j4-privilegi-linux/README.md) | Privilegi di un account Linux | Appliance Debian in OVA |
+| [Ambiente di sviluppo](dev/README.md) | Istanza CTFd locale per il collaudo | Servizi Docker sul PC degli autori |
 
-I file necessari a build, esecuzione e verifica verranno aggiunti alla
-directory della challenge corrispondente quando saranno implementati.
-I pacchetti generati appartengono a `/artifacts/`, già esclusa da Git nella
-radice del repository. Credenziali effettive, flag canoniche, soluzioni,
-copie corrette e risultati grezzi delle sessioni sono conservati fuori dal
-repository pubblico. Prima della pubblicazione va valutato anche se i
-sorgenti anticipano il percorso risolutivo della sessione valutata.
+## Documentazione delle challenge
+
+Ogni challenge mantiene un unico README contenente:
+
+- obiettivo e scenario;
+- stato di avanzamento;
+- sorgenti e costruzione dei materiali;
+- materiali distribuiti e istruzioni d'uso;
+- configurazione CTFd;
+- verifiche effettuate ed esiti;
+- riproducibilità e ripristino, dove applicabile.
+
+Le schede iniziali vengono completate durante l'implementazione.
+La presenza di una directory non indica che la challenge sia già pronta.
 
 ## Impostazione del laboratorio
 
 - Partecipazione individuale con account CTFd precreati in User Mode.
-- Quattro challenge indipendenti, disponibili in ordine libero durante la prova.
+- Quattro challenge indipendenti, affrontabili in ordine libero.
 - Preparazione e importazione degli ambienti prima del tempo di soluzione.
 - Accesso Wi-Fi al portale e funzionamento offline durante la sessione.
-- Punteggi statici, un hint gratuito per challenge e un secondo opzionale a costo.
-- Classifica per account; un invio duplicato non assegna ulteriori punti.
-- Reset della copia locale senza cancellare i risultati registrati sul portale.
+- Punteggi statici, un suggerimento gratuito e un secondo opzionale a costo.
+- Classifica per account; gli invii duplicati non assegnano ulteriori punti.
+- Ripristino degli ambienti locali senza cancellare i risultati sul portale.
 
-La configurazione del portale e la procedura di preparazione devono essere
-collaudate separatamente. Il cambio del profilo di rete non imposta account,
-challenge, hint o orari in CTFd.
+Il cambio del profilo di rete non configura account, challenge,
+suggerimenti o orari in CTFd.
 
-### Configurazione rinviata alla preparazione della sessione
+## Materiali locali
 
-La predisposizione degli account e la chiusura della registrazione autonoma
-sul portale del Master sono rinviate alla preparazione della sessione.
-Non sono prerequisiti per creare questa struttura o sviluppare le challenge.
-Prima dell'accesso dei partecipanti andranno verificati gli account
-individuali precreati, la separazione degli amministratori, il login e
-il blocco delle nuove registrazioni autonome.
+La directory `artifacts/`, nella radice del repository, contiene
+i materiali generati e le evidenze delle verifiche ed è esclusa da Git.
 
-La visibilità della registrazione è un'impostazione globale dell'istanza
-CTFd condivisa con Attack & Defense. Il cambio del profilo di rete non la
-modifica e non conserva configurazioni CTFd distinte per le due modalità.
-Questo punto resta da completare; non documenta una modifica già eseguita.
-Rimane valido il vincolo di sola lettura sul Master.
+Le credenziali dell'istanza di sviluppo appartengono a `dev/.env`,
+anch'esso escluso dal versionamento. Il modello pubblico è
+`dev/.env.example`.
 
-## Ordine di implementazione
+Flag effettive, configurazioni riservate e soluzioni degli autori
+rimangono fuori dai file pubblicati. Ai partecipanti vengono forniti
+soltanto gli allegati indicati nel README della rispettiva challenge.
 
-1. Rilevare in sola lettura lo stato del Master e la configurazione del portale.
-2. Verificare in un ambiente di sviluppo distinto il flusso CTFd: accesso,
-   preparazione prima del via, invio flag, punteggio, hint e classifica.
-3. Realizzare J1 con generatore, pacchetto finale, istruzioni e controlli.
-4. Realizzare J3 per verificare anche distribuzione, esecuzione e reset
-   di un ambiente interattivo locale.
-5. Completare J2 e J4 con i rispettivi percorsi di build e collaudo.
-6. Validare la sessione completa, raccogliere le evidenze e tarare i parametri.
+## Attività successive
 
-Per ogni blocco si registrano requisito, modifica, verifica eseguita, esito
-osservato e limiti. Dopo il consolidamento si prepara il testo della tesi
-coerente con lo stile e l'indice correnti, distinguendo implementazione e
-risultati misurati.
+1. Completare la revisione delle intestazioni HTTP di J1 e aggiornare
+   gli artefatti e i riferimenti della verifica.
+2. Realizzare J4, dall'installazione della VM al collaudo dell'OVA.
+3. Completare J2 e J3.
+4. Predisporre sul Master la sessione con account e materiali definitivi.
+5. Verificare accesso, distribuzione, isolamento e funzionamento complessivo
+   nella rete del laboratorio.
 
-## Confini del lavoro
+Prima della sessione devono essere verificati anche i limiti di upload
+del portale e del reverse proxy, in relazione ai pacchetti TAR e OVA.
 
-Lo sviluppo avviene in una copia di lavoro distinta dal Master. Sul Master,
-anche tramite SSH, sono consentiti esclusivamente comandi di lettura: questo
-documento non autorizza modifiche a file, configurazioni, repository,
-servizi o dati della competizione. Commit e pubblicazione vengono eseguiti
-dall'utente nella propria copia di sviluppo, dopo la spiegazione delle
-modifiche, delle motivazioni e delle verifiche svolte.
+## Integrazione con il Master
+
+Durante lo sviluppo, sul Master sono previste esclusivamente operazioni
+di lettura. L'applicazione delle configurazioni e il caricamento dei
+materiali appartengono alla successiva fase di integrazione.
+
+La registrazione autonoma, la predisposizione degli account e le altre
+impostazioni globali di CTFd devono essere coordinate con l'utilizzo
+dell'istanza comune da parte di Attack & Defense.
 
 La configurazione comune è descritta in
 [Preparazione e utilizzo del Master](../common/README.md).
+
+Le prove nell'ambiente locale non sostituiscono quelle sul reverse proxy,
+sulla rete Wi-Fi e sulle postazioni effettivamente utilizzate.
