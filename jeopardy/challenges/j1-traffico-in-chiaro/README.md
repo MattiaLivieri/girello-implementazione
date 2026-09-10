@@ -21,7 +21,15 @@ Completate sul PC Windows di sviluppo:
 - recupero della flag con la password individuata nel traffico;
 - creazione e verifica del pacchetto di distribuzione.
 
-Restano da completare l'integrazione di J1 in CTFd e la verifica
+L'integrazione nel CTFd locale è stata verificata mediante un account
+studente: la flag corretta viene accettata e assegna il punteggio
+della challenge; lo sblocco del suggerimento a pagamento sottrae
+10 punti.
+
+La configurazione e gli esiti sono descritti nella sezione
+Configurazione CTFd di questo documento.
+
+Restano da completare il caricamento sul CTFd del Master e la verifica
 dell'accesso e della distribuzione nella rete del laboratorio.
 
 ## Sorgenti
@@ -136,3 +144,105 @@ possono avere timestamp, parametri TCP e byte differenti.
 
 Per ripetere l'esercitazione con gli stessi materiali si conserva
 e distribuisce il pacchetto validato, identificato dal suo SHA-256.
+
+## Configurazione CTFd
+
+### Parametri della challenge
+
+| Campo | Valore |
+| --- | --- |
+| Nome | J1 - Traffico in chiaro |
+| Categoria | Analisi di rete |
+| Tipo | standard |
+| Punteggio | 100, fisso |
+| Flag | static |
+| Confronto della flag | Case Sensitive |
+| Max Attempts | 0, senza limite totale |
+| Connection Info | Vuoto |
+| Prerequisiti della challenge | Nessuno |
+
+Durante il caricamento si mantiene lo stato Hidden.
+Dopo aver completato la configurazione si imposta Visible.
+
+Il valore effettivo della flag si legge dal campo `flag` di
+`artifacts/j1/private/scenario.json`, relativo al pacchetto validato.
+Il file rimane fuori dalla repository e dagli allegati pubblici.
+
+### Descrizione per i partecipanti
+
+Una postazione ha consultato un archivio documentale interno.
+La cattura contiene le richieste alle risorse pubbliche e il trasferimento
+di un documento riservato. L'utente riutilizza la stessa password per
+l'accesso al servizio e per proteggere l'archivio trasferito.
+
+Analizza `traffico.pcap`, ricostruisci il documento trasferito e recupera
+la flag contenuta al suo interno.
+
+Scarica ed estrai `j1-traffico-in-chiaro.zip`, quindi leggi `README.txt`.
+Lo ZIP di distribuzione si estrae senza password; l'archivio presente
+nel traffico richiede invece la password da recuperare.
+
+Strumenti: Wireshark e un programma compatibile con ZIP AES-256,
+come 7-Zip. L'analisi si svolge offline sul proprio PC:
+non occorre contattare gli indirizzi presenti nella cattura.
+
+Inserisci la flag rispettando maiuscole, minuscole e simboli.
+
+### Allegato
+
+L'unico allegato da caricare su CTFd è:
+
+`artifacts/j1/release/j1-traffico-in-chiaro.zip`
+
+SHA-256 del pacchetto validato:
+
+`b70f8f7f14c755f5198fa20c4e501b9d383d8335bc27384aae03a21f06d2a4ca`
+
+Il file esterno `j1-traffico-in-chiaro.zip.sha256` viene conservato
+tra i materiali dell'autore. Non viene allegato alla challenge.
+
+Il pacchetto mantiene al proprio interno `traffico.pcap`, `README.txt`
+e `SHA256SUMS`. Il controllo degli hash non è richiesto per risolvere J1.
+
+### Suggerimenti
+
+#### Orientamento
+
+- Costo: 0 punti.
+- Prerequisiti: nessuno.
+
+Concentrati sulle richieste HTTP. Distingui le risorse pubbliche
+dal documento riservato e osserva come viene autenticato l'accesso.
+
+#### Procedura operativa
+
+- Costo: 10 punti.
+- Prerequisito configurato: Orientamento.
+
+Nell'header Authorization, HTTP Basic rappresenta la coppia
+nomeutente:password in Base64, che è una codifica reversibile.
+
+Recupera la password, poi usa File → Export Objects → HTTP
+in Wireshark per esportare l'oggetto di tipo application/zip.
+Apri l'archivio con un programma compatibile con ZIP AES-256
+e utilizza la password recuperata.
+
+CTFd richiede un saldo sufficiente per acquistare il suggerimento
+a pagamento. Il costo viene sottratto al momento dello sblocco.
+
+### Verifica funzionale locale
+
+Ambiente: CTFd 3.8.7, istanza Girello - Jeopardy DEV sul PC di sviluppo,
+raggiungibile all'indirizzo http://127.0.0.1:18080.
+
+Le prove manuali con un account studente hanno confermato:
+
+- visualizzazione della challenge e dei suggerimenti;
+- accettazione della flag corretta e assegnazione del punteggio;
+- sblocco dei suggerimenti e sottrazione di 10 punti per quello a pagamento.
+
+La generazione del PCAP e la soluzione mediante Wireshark sono
+documentate nel README della challenge.
+
+Il caricamento sul Master e la verifica dalla rete del laboratorio
+restano attività successive.
