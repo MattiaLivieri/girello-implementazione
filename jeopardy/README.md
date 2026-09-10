@@ -1,17 +1,19 @@
 # Modalità Jeopardy di Girello
 
 Questa directory contiene le quattro challenge del laboratorio Jeopardy.
-Il Master ospita CTFd e distribuisce i materiali; ciascuno studente
-analizza o esegue la propria copia sul PC personale.
+Nell'architettura prevista, il Master ospita CTFd e distribuisce
+i materiali; ciascuno studente analizza o esegue la propria copia
+sul PC personale.
 
 ## Stato del lavoro
 
 J1 è stata realizzata e verificata sul PC di sviluppo, comprendendo
 generazione dei materiali, soluzione e integrazione nel CTFd locale.
 
-È stata individuata un'intestazione HTTP impropria nelle risposte
-alle risorse pubbliche del server di costruzione. La cattura aggiornata
-e il relativo pacchetto devono essere verificati dopo la correzione.
+Le intestazioni HTTP del server di costruzione sono state corrette.
+La cattura aggiornata e il pacchetto di distribuzione sono stati
+verificati, confermando il recupero dell'archivio e della flag.
+Gli hash dei materiali validati sono riportati nel README di J1.
 
 J2, J3 e J4 contengono le specifiche iniziali. I relativi ambienti,
 artefatti e collaudi devono ancora essere realizzati.
@@ -49,8 +51,8 @@ La presenza di una directory non indica che la challenge sia già pronta.
 - Partecipazione individuale con account CTFd precreati in User Mode.
 - Quattro challenge indipendenti, affrontabili in ordine libero.
 - Preparazione e importazione degli ambienti prima del tempo di soluzione.
-- Accesso Wi-Fi al portale e funzionamento offline durante la sessione.
-- Punteggi statici, un suggerimento gratuito e un secondo opzionale a costo.
+- Accesso Wi-Fi al portale locale, senza necessità di Internet durante la sessione.
+- Punteggi statici, un suggerimento gratuito e un secondo opzionale a pagamento.
 - Classifica per account; gli invii duplicati non assegnano ulteriori punti.
 - Ripristino degli ambienti locali senza cancellare i risultati sul portale.
 
@@ -66,22 +68,27 @@ Le credenziali dell'istanza di sviluppo appartengono a `dev/.env`,
 anch'esso escluso dal versionamento. Il modello pubblico è
 `dev/.env.example`.
 
-Flag effettive, configurazioni riservate e soluzioni degli autori
-rimangono fuori dai file pubblicati. Ai partecipanti vengono forniti
-soltanto gli allegati indicati nel README della rispettiva challenge.
+I valori effettivi delle flag, le credenziali e le configurazioni
+riservate non vengono pubblicati nei sorgenti o nella documentazione.
+Le flag sono inserite nei materiali della challenge secondo
+il meccanismo previsto per il loro recupero.
+
+Ai partecipanti vengono forniti soltanto gli allegati indicati
+nel README della rispettiva challenge. Configurazioni degli autori,
+soluzioni estratte e rapporti di verifica rimangono separati
+dai pacchetti distribuiti.
 
 ## Attività successive
 
-1. Completare la revisione delle intestazioni HTTP di J1 e aggiornare
-   gli artefatti e i riferimenti della verifica.
-2. Realizzare J4, dall'installazione della VM al collaudo dell'OVA.
-3. Completare J2 e J3.
-4. Predisporre sul Master la sessione con account e materiali definitivi.
-5. Verificare accesso, distribuzione, isolamento e funzionamento complessivo
+1. Realizzare J4, dall'installazione della VM al collaudo dell'OVA.
+2. Completare J2 e J3.
+3. Predisporre sul Master la sessione con account e materiali definitivi.
+4. Verificare accesso, distribuzione, isolamento e funzionamento complessivo
    nella rete del laboratorio.
 
-Prima della sessione devono essere verificati anche i limiti di upload
-del portale e del reverse proxy, in relazione ai pacchetti TAR e OVA.
+Prima del caricamento dei materiali sul Master devono essere verificati
+anche i limiti di upload del portale e del reverse proxy, dimensionandoli
+sui pacchetti effettivi, in particolare TAR e OVA.
 
 ## Integrazione con il Master
 

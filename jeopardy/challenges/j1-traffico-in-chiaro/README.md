@@ -21,6 +21,10 @@ Completate sul PC Windows di sviluppo:
 - recupero della flag con la password individuata nel traffico;
 - creazione e verifica del pacchetto di distribuzione.
 
+La successiva revisione delle intestazioni HTTP è stata verificata
+analizzando la nuova cattura e ricostruendo l'archivio trasferito.
+L'archivio interno e la flag sono rimasti invariati.
+
 L'integrazione nel CTFd locale è stata verificata mediante un account
 studente: la flag corretta viene accettata e assegna il punteggio
 della challenge; lo sblocco del suggerimento a pagamento sottrae
@@ -61,6 +65,10 @@ Lo scambio comprende sette richieste:
 - una richiesta dell'archivio senza credenziali, con risposta HTTP 401;
 - una richiesta autenticata, con risposta HTTP 200 e trasferimento dello ZIP.
 
+Il server indica il tipo e la lunghezza del contenuto nelle risposte.
+L'intestazione `Content-Disposition` assegna il nome `riservato.zip`
+soltanto alla risposta che trasferisce l'archivio.
+
 Il filtro acquisisce il traffico TCP con il server sulla porta 8000.
 La cattura usa un buffer da 16 MiB e scrive inizialmente in un file
 temporaneo su tmpfs. Dopo l'arresto di tcpdump, il file viene copiato
@@ -79,10 +87,12 @@ superamento dei controlli. Il laboratorio viene arrestato al termine.
 I percorsi seguenti sono relativi alla radice del repository:
 
 - `artifacts/j1/private/`: configurazione riservata e archivio originale.
-- `artifacts/j1/capture/`: PCAP, log e rapporto della cattura.
-- `artifacts/j1/validation/`: archivio e testo recuperati durante la verifica.
-- `artifacts/j1/release/`: pacchetto pubblico e relativo checksum.
+- `artifacts/j1/capture/`: PCAP, log e rapporto della cattura aggiornata.
+- `artifacts/j1/validation/`: archivio e testo recuperati durante la verifica mediante Wireshark.
+- `artifacts/j1/release/`: pacchetto pubblico aggiornato e relativo checksum.
 - `artifacts/j1/capture-fallita-01/`: evidenze del primo tentativo di cattura.
+- `artifacts/j1/capture-prima-correzione-http/`: cattura precedente alla correzione delle intestazioni HTTP.
+- `artifacts/j1/release-prima-correzione-http/`: pacchetto di distribuzione precedente.
 
 La directory `artifacts/` rimane esclusa dal versionamento Git.
 Configurazione riservata, testo estratto e log non sono inclusi
@@ -90,23 +100,37 @@ nel pacchetto destinato ai partecipanti.
 
 ## Esito della verifica locale
 
-La cattura validata contiene 84 pacchetti e sette richieste HTTP.
+La cattura aggiornata contiene 84 pacchetti e sette richieste HTTP.
 Tcpdump riporta 84 pacchetti ricevuti dal filtro e zero pacchetti
-persi dal kernel. Il PCAP ha una dimensione di 10 711 byte.
+persi dal kernel. Il PCAP ha una dimensione di 10 416 byte.
 
-Lo ZIP esportato con Wireshark ha lo stesso SHA-256 dell'originale.
-La flag recuperata coincide con quella prevista dalla configurazione.
+L'intestazione `Content-Disposition` identifica `riservato.zip` soltanto
+nella risposta che trasferisce l'archivio. Le risposte alle risorse
+pubbliche non contengono questa intestazione.
 
-SHA-256 dell'archivio interno:
+La prima versione della cattura è stata verificata mediante
+esportazione dell'archivio con Wireshark. Dopo la correzione delle
+intestazioni HTTP, la ricostruzione dei flussi TCP della nuova cattura
+ha confermato che l'archivio trasferito è identico all'originale.
+
+La password recuperata dalle credenziali HTTP Basic consente di
+estrarre la flag prevista dalla configurazione. L'estrazione senza
+password o con una password errata viene rifiutata.
+
+Gli hash del PCAP e dell'archivio ricostruito corrispondono ai valori
+registrati in `capture.json`. I checksum contenuti nel pacchetto
+di distribuzione corrispondono ai file inclusi.
+
+SHA-256 dell'archivio interno `riservato.zip`:
 
 ```text
 7ad5df79df9905599cf8dffb64e45df008a90b78c2463018dbb2c4ace365aae0
 ```
 
-SHA-256 del PCAP validato:
+SHA-256 del PCAP validato `traffico.pcap`:
 
 ```text
-2f0e24b2c61608aca330379f8e9a49dbb6f3ee351e36a1f2091ed85047d54758
+c0e821b72c01b0c21f4676af820dc384a22e13c7bdc1690726f4099f8be9770f
 ```
 
 ## Pacchetto di distribuzione
@@ -118,13 +142,14 @@ contenente esclusivamente:
 - `README.txt`;
 - `SHA256SUMS`, con gli hash dei due file precedenti.
 
-Il checksum del pacchetto esterno viene salvato separatamente
+Il pacchetto verificato ha una dimensione di 3 971 byte.
+Il suo checksum viene salvato separatamente
 in `j1-traffico-in-chiaro.zip.sha256`.
 
 SHA-256 del pacchetto verificato:
 
 ```text
-b70f8f7f14c755f5198fa20c4e501b9d383d8335bc27384aae03a21f06d2a4ca
+70985dd05c6f613a78453a43c8ee613e7f7d03ea016b8833ac81608ded68f543
 ```
 
 `package.py` richiede l'hash del PCAP validato, controlla i file
@@ -132,8 +157,8 @@ inclusi e ne confronta il contenuto dopo la scrittura dello ZIP.
 Una nuova esecuzione con gli stessi materiali verifica il pacchetto
 esistente; un pacchetto diverso non viene sovrascritto.
 
-Durante l'esercitazione il Master distribuisce il materiale tramite
-CTFd. Lo studente analizza il PCAP sul proprio computer con Wireshark
+La distribuzione prevista sul Master avviene tramite CTFd.
+Lo studente analizza il PCAP sul proprio computer con Wireshark
 e un programma compatibile con ZIP AES-256, come 7-Zip.
 Non è previsto un servizio J1 attivo durante la gara.
 
@@ -166,7 +191,7 @@ Dopo aver completato la configurazione si imposta Visible.
 
 Il valore effettivo della flag si legge dal campo `flag` di
 `artifacts/j1/private/scenario.json`, relativo al pacchetto validato.
-Il file rimane fuori dalla repository e dagli allegati pubblici.
+Il file rimane escluso dal versionamento Git e dagli allegati pubblici.
 
 ### Descrizione per i partecipanti
 
@@ -196,7 +221,9 @@ L'unico allegato da caricare su CTFd è:
 
 SHA-256 del pacchetto validato:
 
-`b70f8f7f14c755f5198fa20c4e501b9d383d8335bc27384aae03a21f06d2a4ca`
+```text
+70985dd05c6f613a78453a43c8ee613e7f7d03ea016b8833ac81608ded68f543
+```
 
 Il file esterno `j1-traffico-in-chiaro.zip.sha256` viene conservato
 tra i materiali dell'autore. Non viene allegato alla challenge.
@@ -233,7 +260,7 @@ a pagamento. Il costo viene sottratto al momento dello sblocco.
 ### Verifica funzionale locale
 
 Ambiente: CTFd 3.8.7, istanza Girello - Jeopardy DEV sul PC di sviluppo,
-raggiungibile all'indirizzo http://127.0.0.1:18080.
+raggiungibile all'indirizzo [http://127.0.0.1:18080](http://127.0.0.1:18080).
 
 Le prove manuali con un account studente hanno confermato:
 
@@ -241,8 +268,9 @@ Le prove manuali con un account studente hanno confermato:
 - accettazione della flag corretta e assegnazione del punteggio;
 - sblocco dei suggerimenti e sottrazione di 10 punti per quello a pagamento.
 
-La generazione del PCAP e la soluzione mediante Wireshark sono
-documentate nel README della challenge.
+Queste prove sono state svolte prima della revisione delle intestazioni
+HTTP. La revisione conserva lo stesso archivio interno e la stessa flag;
+il pacchetto aggiornato è identificato nella sezione Allegato.
 
 Il caricamento sul Master e la verifica dalla rete del laboratorio
 restano attività successive.

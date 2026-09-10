@@ -83,7 +83,7 @@ def make_handler(archive_data, username, password):
 
             if status == 401:
                 self.send_header("WWW-Authenticate", 'Basic realm="Archivio"')
-            elif status == 200:
+            elif status == 200 and content_type == "application/zip":
                 self.send_header(
                     "Content-Disposition", 'attachment; filename="riservato.zip"'
                 )
