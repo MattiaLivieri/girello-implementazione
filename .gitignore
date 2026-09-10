@@ -16,3 +16,7 @@ secrets/
 *.swp
 *.swo
 *~
+
+# Impostazioni locali di IntelliJ IDEA
+/.idea/
+*.iml
