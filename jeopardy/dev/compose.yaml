@@ -39,13 +39,7 @@ services:
       - data
 
     healthcheck:
-      test:
-        - CMD
-        - python
-        - -c
-        - >-
-          import urllib.request;
-          urllib.request.urlopen('http://127.0.0.1:8000/', timeout=5).close()
+      test: [ "CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/', timeout=5).close()" ]
       interval: 15s
       timeout: 10s
       retries: 10
