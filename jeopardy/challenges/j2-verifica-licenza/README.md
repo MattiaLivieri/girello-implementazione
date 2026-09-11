@@ -46,6 +46,7 @@ una validazione su tutte le postazioni BYOD.
 | `author/src/LicenseValidator.java.template` | Definisce formato, normalizzazione e confronto con i valori generati. |
 | `author/src/CodeTransformer.java` | Implementa permutazione, XOR e addizione modulo 256. |
 | `player/README.txt` | Contiene le istruzioni del partecipante. |
+| `README.md` | Documenta costruzione, rilascio, configurazione CTFd ed esiti. |
 
 Il template viene completato soltanto nella directory locale di build.
 La classe risultante nel JAR si chiama `LicenseValidator`.
@@ -147,6 +148,57 @@ Il rapporto automatico descrive la build e i controlli che essa esegue.
 La ricostruzione con il decompilatore è una prova successiva e distinta,
 documentata in questa sezione; non viene eseguita da `Build.java`.
 
+### Procedura di decompilazione e verifica manuale
+
+Il collaudo statico utilizza Vineflower 1.12.0, già predisposto in
+`artifacts/j2/tools/vineflower-1.12.0.jar`. Lo strumento non è incluso
+nel pacchetto pubblico della challenge. Il comando seguente documenta
+come ripetere la decompilazione; non occorre rieseguirlo sul JAR
+già collaudato.
+
+Dalla radice del repository, in PowerShell:
+
+```powershell
+& {
+    $ErrorActionPreference = "Stop"
+    $j2Decompiler = ".\artifacts\j2\tools\vineflower-1.12.0.jar"
+    $j2Jar = ".\artifacts\j2\build\verifica-licenza.jar"
+    $j2Output = ".\artifacts\j2\validation\decompiled"
+    foreach ($j2Path in @($j2Decompiler, $j2Jar)) {
+        if (-not (Test-Path -LiteralPath $j2Path -PathType Leaf)) {
+            throw "File mancante: $j2Path"
+        }
+    }
+    $j2Expected = "002e3a5ae3343712c195486b8b90034d4e3b651b76e4e93225f9255d11427ae9"
+    if ((Get-FileHash -LiteralPath $j2Jar -Algorithm SHA256).Hash -ne $j2Expected) {
+        throw "JAR diverso dalla versione descritta in questo README."
+    }
+    if (Test-Path -LiteralPath $j2Output) {
+        throw "Output di verifica gia presente: conservarlo o scegliere una nuova cartella."
+    }
+    New-Item -ItemType Directory -Path $j2Output -Force | Out-Null
+    java -jar $j2Decompiler --folder $j2Jar $j2Output
+    if ($LASTEXITCODE -ne 0) { throw "Decompilazione J2 non riuscita." }
+    Get-ChildItem -LiteralPath $j2Output -Recurse -File
+}
+```
+
+Analizzare le tre classi ottenute, seguendo l'input fino all'array di
+confronto. Ricostruire il codice invertendo addizione modulo 256, XOR
+e permutazione. Solo dopo la ricostruzione confrontare il risultato
+con la configurazione privata degli autori, per mantenere indipendente
+la prova della soluzione dal materiale consegnato.
+
+Per la prova facoltativa di esecuzione:
+
+```powershell
+java -jar .\artifacts\j2\build\verifica-licenza.jar
+```
+
+Inserire il codice ricostruito nel formato con trattini. Nella prova
+già conclusa il verificatore lo ha accettato; codice e flag coincidevano
+con i valori canonici. Non riportare tali valori nel README pubblico.
+
 ## Pacchetto di distribuzione
 
 Il file `artifacts/j2/release/j2-verifica-licenza.zip` contiene
@@ -185,6 +237,31 @@ Il checksum esterno è conservato in
 degli autori. Il file `SHA256SUMS` interno riguarda invece i contenuti
 estratti dallo ZIP.
 
+### Controllo del rilascio conservato
+
+Il blocco seguente confronta lo ZIP locale con l'impronta del rilascio
+descritto in questo documento. Eseguirlo dalla radice del repository,
+in PowerShell. Non ricostruisce né modifica i materiali.
+
+```powershell
+& {
+    $ErrorActionPreference = "Stop"
+    $j2Zip = ".\artifacts\j2\release\j2-verifica-licenza.zip"
+    $j2Expected = "e88fcc3d3ebb38301ffa3ca1c270509a35533dba557a867aa3c609ce7d317a6c"
+    if (-not (Test-Path -LiteralPath $j2Zip -PathType Leaf)) {
+        throw "Pacchetto j2 mancante."
+    }
+    $j2Actual = (Get-FileHash -LiteralPath $j2Zip -Algorithm SHA256).Hash
+    if ($j2Actual -ne $j2Expected) { throw "Pacchetto diverso dal rilascio collaudato." }
+    Write-Output "Rilascio j2: OK"
+}
+```
+
+L'impronta identifica questa versione del pacchetto. Una revisione
+dei materiali richiede il confezionamento e l'aggiornamento dei checksum;
+non basta sostituire il valore atteso per dichiarare collaudata una
+versione differente.
+
 ## Riproducibilità
 
 La configurazione privata associa le build allo stesso codice canonico.
@@ -196,6 +273,8 @@ Una modifica al JAR richiede un nuovo collaudo prima del confezionamento.
 Una modifica alle istruzioni richiede l'aggiornamento del pacchetto
 e dei checksum. La rigenerazione della licenza richiede anche
 l'allineamento della flag configurata in CTFd.
+L'aggiornamento del README tecnico degli autori non modifica il JAR
+né lo ZIP già distribuito e non richiede di ricompilarli.
 
 ## Configurazione CTFd
 
@@ -252,6 +331,49 @@ In CTFd viene caricato soltanto lo ZIP della directory `release`.
 L'archivio comprende già le istruzioni e i checksum dei contenuti.
 Il README tecnico, i sorgenti e i materiali privati rimangono
 nei materiali degli autori.
+
+### Confronto dello ZIP scaricato da CTFd
+
+Caricare lo ZIP di `artifacts/j2/release/` nella scheda della challenge.
+Con l'account studente scaricarlo dal portale e salvarlo con il nome
+originale in `artifacts/j2/download-check/`. La directory è destinata
+al controllo degli autori; il suo nome non è un requisito della challenge.
+
+Per predisporla, dalla radice del repository:
+
+```powershell
+New-Item -ItemType Directory -Force -Path .\artifacts\j2\download-check | Out-Null
+```
+
+Conservare qui il download effettivo, senza copiarlo da `release/`.
+Se il browser aggiunge un suffisso come `(1)`, identificare la copia
+appena scaricata e ripristinare il nome originale. Eseguire quindi:
+
+```powershell
+& {
+    $ErrorActionPreference = "Stop"
+    $j2Original = ".\artifacts\j2\release\j2-verifica-licenza.zip"
+    $j2Downloaded = ".\artifacts\j2\download-check\j2-verifica-licenza.zip"
+    foreach ($j2Path in @($j2Original, $j2Downloaded)) {
+        if (-not (Test-Path -LiteralPath $j2Path -PathType Leaf)) {
+            throw "File mancante: $j2Path"
+        }
+    }
+    $j2OriginalHash = (Get-FileHash -LiteralPath $j2Original -Algorithm SHA256).Hash
+    $j2DownloadHash = (Get-FileHash -LiteralPath $j2Downloaded -Algorithm SHA256).Hash
+    if ($j2OriginalHash -ne $j2DownloadHash) { throw "Download differente dal rilascio." }
+    Write-Output "Download j2: OK"
+}
+```
+
+Un file mancante viene segnalato separatamente da una differenza di
+checksum. La corrispondenza con il rilascio già collaudato conferma
+che il download contiene gli stessi byte, senza richiedere di ripetere
+la soluzione su una copia identica.
+
+Per J2 questo confronto è già stato completato con esito coincidente.
+Il blocco serve a ripetere il controllo su una nuova distribuzione,
+ad esempio dopo il caricamento sul Master.
 
 ### Suggerimenti
 

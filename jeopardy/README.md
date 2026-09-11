@@ -1,107 +1,104 @@
-# Modalità Jeopardy di Girello
+# Girello
 
-Questa directory contiene le quattro challenge del laboratorio Jeopardy.
-Nell'architettura prevista, il Master ospita CTFd e distribuisce
-i materiali; ciascuno studente analizza o esegue la propria copia
-sul PC personale.
+Cyber Range didattico locale e portatile, sviluppato nell'ambito della
+tesi di Informatica presso l'Università di Camerino.
 
-## Stato del lavoro
+## Obiettivo
 
-J1 è stata realizzata e verificata sul PC di sviluppo, comprendendo
-generazione dei materiali, soluzione e integrazione nel CTFd locale.
+Realizzare esercitazioni Jeopardy e Attack & Defense utilizzando un
+nodo centrale e i PC dei partecipanti, con risorse e complessità di
+gestione contenute.
 
-Le intestazioni HTTP del server di costruzione sono state corrette.
-La cattura aggiornata e il pacchetto di distribuzione sono stati
-verificati, confermando il recupero dell'archivio e della flag.
-Gli hash dei materiali validati sono riportati nel README di J1.
+Le sessioni si svolgono su una rete locale. Materiali, strumenti e
+dipendenze devono essere predisposti prima dell'esercitazione, così
+da consentirne lo svolgimento senza accesso a Internet.
 
-J2, J3 e J4 contengono le specifiche iniziali. I relativi ambienti,
-artefatti e collaudi devono ancora essere realizzati.
+## Architettura di riferimento
 
-Il caricamento sul Master e la verifica nella rete del laboratorio
-restano attività successive.
+Il nodo centrale, denominato Master, è un ODROID H4+ con Debian 13.
+Ospita il portale CTFd, il database MariaDB e la cache Redis tramite
+Docker Compose. Nginx, eseguito sul Master, gestisce gli accessi
+previsti dalla modalità selezionata.
+
+I PC dei partecipanti eseguono localmente gli ambienti delle
+esercitazioni. Le due modalità vengono utilizzate in sessioni distinte:
+
+- Jeopardy: laboratorio con account individuali, accesso Wi-Fi al
+  portale e una copia locale dei materiali per ciascun partecipante.
+- Attack & Defense: esercitazione fra due team, con accesso ai servizi
+  avversari attraverso i collegamenti predisposti sul Master.
+
+Sono previsti tre profili di rete: `default` per l'uso ordinario del
+Master, `jeopardy` e `ad` per le rispettive esercitazioni.
 
 ## Organizzazione
 
-| Directory | Contenuto | Distribuzione |
-| --- | --- | --- |
-| [J1](challenges/j1-traffico-in-chiaro/README.md) | Analisi di traffico HTTP | ZIP con PCAP e istruzioni |
-| [J2](challenges/j2-verifica-licenza/README.md) | Analisi di un verificatore Java | ZIP con JAR e istruzioni |
-| [J3](challenges/j3-portale-universitario/README.md) | Autorizzazione dei documenti in un'applicazione web | Immagine Docker in TAR |
-| [J4](challenges/j4-privilegi-linux/README.md) | Privilegi di un account Linux | Appliance Debian in OVA |
-| [Ambiente di sviluppo](dev/README.md) | Istanza CTFd locale per il collaudo | Servizi Docker sul PC degli autori |
+| Cartella | Contenuto |
+| --- | --- |
+| `common/` | Servizi del Master, configurazioni di rete, Nginx e script comuni. |
+| [jeopardy/](jeopardy/README.md) | Sorgenti, materiali e istruzioni delle challenge. |
+| `attack_defense/` | Servizi vulnerabili, checker e gestione dell'esercitazione. |
+| `docs/` | Preparazione del sistema, procedure operative e resoconti delle verifiche. |
 
-## Documentazione delle challenge
+## Stato del ramo Jeopardy
 
-Ogni challenge mantiene un unico README contenente:
+Le quattro challenge sono state implementate e sottoposte a prove locali.
+Per J3 sono stati completati anche l'esportazione dell'immagine Docker,
+il caricamento del TAR, l'avvio offline e il percorso di soluzione.
+Nel CTFd locale sono stati verificati gli allegati scaricati e gli invii
+della flag, con assegnazione dei 150 punti previsti.
 
-- obiettivo e scenario;
-- stato di avanzamento;
-- sorgenti e costruzione dei materiali;
-- materiali distribuiti e istruzioni d'uso;
-- configurazione CTFd;
-- verifiche effettuate ed esiti;
-- riproducibilità e ripristino, dove applicabile.
+I materiali destinati ai partecipanti sono:
 
-Le schede iniziali vengono completate durante l'implementazione.
-La presenza di una directory non indica che la challenge sia già pronta.
+| Challenge | Materiali di distribuzione |
+| --- | --- |
+| J1 - Traffico in chiaro | ZIP con PCAP, `README.txt` e checksum interni. |
+| J2 - Verifica licenza | ZIP con JAR, `README.txt` e checksum interni. |
+| J3 - Portale universitario | TAR dell'immagine Docker, `compose.yaml`, `README.txt` e `SHA256SUMS`. |
+| J4 - Privilegi Linux | Appliance OVA, `README.txt` e `SHA256SUMS` dell'OVA. |
 
-## Impostazione del laboratorio
+Le procedure operative, con i comandi di preparazione e controllo,
+sono raccolte nei README delle singole challenge:
 
-- Partecipazione individuale con account CTFd precreati in User Mode.
-- Quattro challenge indipendenti, affrontabili in ordine libero.
-- Preparazione e importazione degli ambienti prima del tempo di soluzione.
-- Accesso Wi-Fi al portale locale, senza necessità di Internet durante la sessione.
-- Punteggi statici, un suggerimento gratuito e un secondo opzionale a pagamento.
-- Classifica per account; gli invii duplicati non assegnano ulteriori punti.
-- Ripristino degli ambienti locali senza cancellare i risultati sul portale.
+- [J1 - Traffico in chiaro](jeopardy/challenges/j1-traffico-in-chiaro/README.md).
+- [J2 - Verifica licenza](jeopardy/challenges/j2-verifica-licenza/README.md).
+- [J3 - Portale universitario](jeopardy/challenges/j3-portale-universitario/README.md).
+- [J4 - Privilegi Linux](jeopardy/challenges/j4-privilegi-linux/README.md).
 
-Il cambio del profilo di rete non configura account, challenge,
-suggerimenti o orari in CTFd.
+Questi documenti distinguono le istruzioni per ripetere una preparazione
+dagli esiti già confermati e dalle attività residue. Per J4 l'aggiunta del README
+agli allegati accompagna l'OVA già collaudata e non richiede una nuova
+esportazione. La sua disponibilità va controllata con l'account studente.
 
-## Materiali locali
+Le prove locali non completano l'integrazione sul Master: restano
+il caricamento e la verifica dei materiali sul portale del laboratorio,
+l'accesso dalle postazioni attraverso la rete Wi-Fi e la valutazione
+con partecipanti.
 
-La directory `artifacts/`, nella radice del repository, contiene
-i materiali generati e le evidenze delle verifiche ed è esclusa da Git.
+## Criteri di sviluppo
 
-Le credenziali dell'istanza di sviluppo appartengono a `dev/.env`,
-anch'esso escluso dal versionamento. Il modello pubblico è
-`dev/.env.example`.
+Le configurazioni di rete e Nginx sono conservate in file statici.
+La preparazione iniziale viene documentata attraverso istruzioni
+manuali. Gli script sono riservati alle operazioni ricorrenti che
+richiedono una sequenza coordinata di azioni.
 
-I valori effettivi delle flag, le credenziali e le configurazioni
-riservate non vengono pubblicati nei sorgenti o nella documentazione.
-Le flag sono inserite nei materiali della challenge secondo
-il meccanismo previsto per il loro recupero.
+## Dati locali
 
-Ai partecipanti vengono forniti soltanto gli allegati indicati
-nel README della rispettiva challenge. Configurazioni degli autori,
-soluzioni estratte e rapporti di verifica rimangono separati
-dai pacchetti distribuiti.
+La repository contiene sorgenti, configurazioni senza credenziali
+reali e documentazione.
 
-## Attività successive
+Le configurazioni private degli scenari, i prodotti di costruzione,
+i pacchetti di rilascio e le copie usate nei controlli locali sono
+conservati sotto `artifacts/`, esclusa dal versionamento Git.
+Le directory `release/` raccolgono i materiali distribuibili;
+le directory `private/` contengono i valori canonici e i dati riservati.
+Il README del partecipante appartiene ai materiali di rilascio.
 
-1. Realizzare J4, dall'installazione della VM al collaudo dell'OVA.
-2. Completare J2 e J3.
-3. Predisporre sul Master la sessione con account e materiali definitivi.
-4. Verificare accesso, distribuzione, isolamento e funzionamento complessivo
-   nella rete del laboratorio.
+Credenziali dei servizi, dati persistenti, backup e log delle sessioni
+sono conservati nelle posizioni locali previste dalle procedure comuni.
+Il solo clone della repository non recupera questi dati né gli artefatti:
+per riutilizzare lo stesso rilascio occorre trasferire anche i materiali
+collaudati e, separatamente, i valori riservati necessari agli autori.
 
-Prima del caricamento dei materiali sul Master devono essere verificati
-anche i limiti di upload del portale e del reverse proxy, dimensionandoli
-sui pacchetti effettivi, in particolare TAR e OVA.
-
-## Integrazione con il Master
-
-Durante lo sviluppo, sul Master sono previste esclusivamente operazioni
-di lettura. L'applicazione delle configurazioni e il caricamento dei
-materiali appartengono alla successiva fase di integrazione.
-
-La registrazione autonoma, la predisposizione degli account e le altre
-impostazioni globali di CTFd devono essere coordinate con l'utilizzo
-dell'istanza comune da parte di Attack & Defense.
-
-La configurazione comune è descritta in
-[Preparazione e utilizzo del Master](../common/README.md).
-
-Le prove nell'ambiente locale non sostituiscono quelle sul reverse proxy,
-sulla rete Wi-Fi e sulle postazioni effettivamente utilizzate.
+Le istruzioni per predisporre il Master e utilizzare i profili sono disponibili
+in [Preparazione e utilizzo del Master](common/README.md).

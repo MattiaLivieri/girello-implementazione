@@ -36,10 +36,14 @@ studente: la flag errata viene rifiutata e quella corretta viene accettata.
 La configurazione e gli esiti sono descritti nella sezione
 Configurazione CTFd di questo documento.
 
-È stato preparato il `README.txt` per i partecipanti. Restano da
-completare le istruzioni dettagliate di preparazione della postazione,
-il relativo caricamento su CTFd e l'allineamento dei percorsi locali
-dei materiali dopo la riorganizzazione.
+Il README del partecipante è mantenuto in `player/README.txt`.
+Il rilascio comprende anche una copia in `artifacts/j4/release/README.txt`,
+da allegare alla scheda CTFd insieme all'OVA e al checksum.
+L'aggiunta delle istruzioni non richiede una nuova esportazione della VM.
+
+Il collaudo documentato del download riguarda l'OVA. Il caricamento
+e la leggibilità del nuovo README con l'account studente vanno confermati
+separatamente; non sono inclusi nelle verifiche già concluse dell'appliance.
 
 Restano inoltre il caricamento sul CTFd del Master, la verifica della
 distribuzione nella rete del laboratorio e la valutazione della
@@ -51,10 +55,12 @@ difficoltà con partecipanti.
 | --- | --- |
 | `author/configure.py` | Controlla i prerequisiti del guest e predispone flag, delega sudo e accesso SSH. |
 | `README.md` | Documenta costruzione, artefatti, verifiche e configurazione CTFd. |
+| `player/README.txt` | Istruzioni destinate al partecipante, da includere nel rilascio e negli allegati CTFd. |
 
-Il `README.txt` per i partecipanti è stato preparato separatamente.
-La sua collocazione nei sorgenti e nei materiali di distribuzione
-deve essere allineata all'organizzazione adottata per J1.
+La copia originale delle istruzioni è versionata in `player/README.txt`.
+La copia da distribuire è conservata in `artifacts/j4/release/README.txt`;
+non deve essere collocata in `private/` e non sostituisce questo README
+tecnico degli autori.
 
 Lo script di configurazione viene eseguito come root esclusivamente
 nel guest di costruzione. La flag canonica, le credenziali amministrative
@@ -229,7 +235,7 @@ repository, è:
 - `artifacts/j4/vm/`: file della VM di costruzione.
 - `artifacts/j4/private/`: copia canonica della flag e materiali riservati.
 - `artifacts/j4/validation/`: file della VM importata per il collaudo.
-- `artifacts/j4/release/`: OVA, checksum e materiali di distribuzione.
+- `artifacts/j4/release/`: `j4-privilegi-linux.ova`, `SHA256SUMS` e `README.txt`.
 - `artifacts/j4/download-check/`: OVA scaricato dal CTFd locale per il confronto.
 
 La directory `artifacts/` rimane esclusa dal versionamento Git.
@@ -245,10 +251,10 @@ D:\Users\Filippo\IdeaProjects\girello-implementazione
 ```
 
 Il controllo del download è stato eseguito in `artifacts/j4/download-check/`
-nella nuova posizione. Il trasferimento degli altri materiali resta
-da allineare: lo spostamento della repository non trasferisce
-automaticamente le VM registrate in VirtualBox né i volumi Docker
-del CTFd locale.
+nella nuova posizione. La posizione degli altri materiali va verificata nella postazione
+effettiva: non è documentato qui il trasferimento completo delle VM.
+Lo spostamento della repository non trasferisce automaticamente
+le VM registrate in VirtualBox né i volumi Docker del CTFd locale.
 
 ## Esito della verifica locale
 
@@ -281,8 +287,27 @@ restano da valutare.
 
 ## Pacchetto di distribuzione
 
-`j4-privilegi-linux.ova` contiene il guest configurato, con descrittore
-OVF 2.0 e manifest. Non viene racchiuso in un ulteriore archivio ZIP.
+Il rilascio contiene tre file separati:
+
+| File | Funzione |
+| --- | --- |
+| `j4-privilegi-linux.ova` | Guest configurato, con descrittore OVF 2.0 e manifest. |
+| `README.txt` | Istruzioni di preparazione, accesso e ripristino per il partecipante. |
+| `SHA256SUMS` | Impronta SHA-256 dell'OVA collaudata. |
+
+L'OVA non viene racchiusa in un ulteriore archivio ZIP. Il README
+accompagna l'appliance come file separato; non viene inserito nel disco
+virtuale e non richiede di modificare la VM.
+
+Per aggiornare la copia delle istruzioni, dalla radice del repository:
+
+```powershell
+Copy-Item .\jeopardy\challenges\j4-privilegi-linux\player\README.txt .\artifacts\j4\release\README.txt
+```
+
+Caricare su CTFd la copia in `release/`. Dopo eventuali modifiche alle
+istruzioni, aggiornare anche la copia distribuita e controllare che
+il partecipante possa scaricare e leggere il nuovo file.
 
 L'esportazione dell'appliance collaudata è stata eseguita con la VM
 spenta, utilizzando il percorso originario dei materiali:
@@ -340,6 +365,53 @@ Il percorso previsto utilizza l'account `ctf` all'interno del guest.
 L'accesso offline al disco virtuale è escluso dalle regole dell'esercitazione;
 non è tecnicamente impedito a chi amministra il proprio PC BYOD.
 
+### Controllo dei file distribuiti
+
+Per confrontare l'OVA conservata nel rilascio con l'impronta già
+collaudata, dalla radice del repository:
+
+```powershell
+& {
+    $ErrorActionPreference = "Stop"
+    $j4Ova = ".\artifacts\j4\release\j4-privilegi-linux.ova"
+    $j4Expected = "c541e0d2ced8c505cadc4a437d9caa452bca6e76322b785847a2f5ac7deaea1f"
+    $j4Actual = (Get-FileHash -LiteralPath $j4Ova -Algorithm SHA256).Hash
+    if ($j4Actual -ne $j4Expected) { throw "OVA diversa dal rilascio collaudato." }
+    Write-Output "OVA J4: OK"
+}
+```
+
+L'impronta nel blocco identifica il rilascio descritto in questo README;
+una nuova esportazione richiede un proprio checksum e un nuovo collaudo.
+Il controllo dell'OVA scaricata è già stato completato. Per la sola
+aggiunta del README è sufficiente caricare la copia in `release/`
+su CTFd, scaricarla con l'account studente e controllarne la leggibilità.
+
+Per un confronto puntuale, salvare il nuovo download come
+`artifacts/j4/download-check/README.txt` e utilizzare:
+
+```powershell
+& {
+    $ErrorActionPreference = "Stop"
+    $j4Original = ".\artifacts\j4\release\README.txt"
+    $j4Downloaded = ".\artifacts\j4\download-check\README.txt"
+    foreach ($j4Path in @($j4Original, $j4Downloaded)) {
+        if (-not (Test-Path -LiteralPath $j4Path -PathType Leaf)) {
+            throw "File mancante: $j4Path"
+        }
+    }
+    $j4OriginalHash = (Get-FileHash -LiteralPath $j4Original -Algorithm SHA256).Hash
+    $j4DownloadHash = (Get-FileHash -LiteralPath $j4Downloaded -Algorithm SHA256).Hash
+    if ($j4OriginalHash -ne $j4DownloadHash) { throw "README scaricato differente." }
+    Write-Output "README J4: OK"
+}
+```
+
+Questo confronto del nuovo README è una procedura da eseguire, non
+un esito già confermato. Il file `SHA256SUMS` distribuito continua a
+contenere il solo hash dell'OVA; il controllo separato del README
+non richiede di modificare quel file.
+
 ## Riproducibilità
 
 La procedura di installazione e lo script consentono di ricostruire
@@ -364,7 +436,7 @@ allineare l'appliance, la copia canonica e il valore atteso in CTFd.
 
 | Campo | Valore |
 | --- | --- |
-| Nome | J4 — Privilegi Linux |
+| Nome | J4 - Privilegi Linux |
 | Categoria | Sicurezza Linux |
 | Tipo | standard |
 | Punteggio | 250, fisso; valore provvisorio fino alla valutazione didattica |
@@ -401,17 +473,21 @@ maiuscole, minuscole e simboli.
 
 ### Allegati
 
-Nel CTFd locale sono stati caricati e verificati:
+La scheda deve distribuire i tre file della cartella `release/`:
 
 - `j4-privilegi-linux.ova`;
+- `README.txt`;
 - `SHA256SUMS`.
 
-Il checksum dell'OVA è riportato nella sezione Pacchetto di distribuzione.
-Il file scaricato dal portale coincide con l'appliance collaudata.
+OVA e checksum sono già stati caricati nel CTFd locale. Il download
+dell'OVA coincide con l'appliance collaudata; il suo hash è riportato
+nella sezione Pacchetto di distribuzione.
 
-Il `README.txt` per i partecipanti è stato preparato successivamente
-e deve essere aggiunto agli allegati. Le istruzioni dettagliate di
-preparazione e le credenziali del guest devono essere disponibili
+Il README completa i materiali destinati al partecipante. La verifica
+aggiuntiva consiste nel controllarne il download e la leggibilità
+con l'account studente. L'importazione e la soluzione della VM già
+collaudata non devono essere ripetute per la sola aggiunta del README.
+Le istruzioni e le credenziali del guest devono essere disponibili
 prima dell'inizio del tempo di risoluzione.
 
 La copia privata di `flag.txt`, lo script di configurazione e questo

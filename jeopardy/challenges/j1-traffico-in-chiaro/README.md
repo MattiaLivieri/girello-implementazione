@@ -9,6 +9,10 @@ recuperata per leggere la flag contenuta al suo interno.
 Il riuso della password è una proprietà esplicita dello scenario.
 I dati e le credenziali utilizzati sono fittizi.
 
+Questo README documenta il lavoro degli autori e contiene dettagli
+del percorso di soluzione. Le istruzioni distribuite ai partecipanti
+sono in `player/README.txt`.
+
 ## Stato
 
 Completate sul PC Windows di sviluppo:
@@ -33,8 +37,14 @@ della challenge; lo sblocco del suggerimento a pagamento sottrae
 La configurazione e gli esiti sono descritti nella sezione
 Configurazione CTFd di questo documento.
 
-Restano da completare il caricamento sul CTFd del Master e la verifica
-dell'accesso e della distribuzione nella rete del laboratorio.
+Resta da documentare il caricamento del pacchetto aggiornato nel CTFd
+locale e il confronto SHA-256 della copia scaricata dal portale.
+Il collaudo della nuova cattura non sostituisce questo controllo
+di distribuzione, anche se la flag è rimasta invariata.
+
+Restano inoltre il caricamento sul CTFd del Master, la verifica
+dell'accesso e della distribuzione nella rete del laboratorio
+e la valutazione della difficoltà con partecipanti.
 
 ## Sorgenti
 
@@ -49,6 +59,7 @@ dell'accesso e della distribuzione nella rete del laboratorio.
 | `author/.dockerignore` | Limita i file inclusi nel contesto di costruzione. |
 | `author/package.py` | Confeziona il PCAP validato e verifica il pacchetto. |
 | `player/README.txt` | Contiene le istruzioni distribuite al partecipante. |
+| `README.md` | Documenta preparazione, rilascio, configurazione CTFd ed esiti. |
 
 ## Costruzione della cattura
 
@@ -81,6 +92,21 @@ delle flag nei byte acquisiti.
 
 Il file assume il nome finale `traffico.pcap` soltanto dopo il
 superamento dei controlli. Il laboratorio viene arrestato al termine.
+
+### Preparazione degli autori
+
+La generazione usa `author/generate.py`; la cattura è coordinata dai
+servizi del Compose in `author/compose.yaml`; il confezionamento è
+affidato a `author/package.py`, che richiede il checksum del PCAP
+collaudato. Questi strumenti riguardano il laboratorio degli autori:
+non vengono eseguiti sulla postazione del partecipante.
+
+Le invocazioni complete di generazione e confezionamento, con i relativi
+argomenti e percorsi montati nei container, devono essere ricavate dagli
+script della versione utilizzata. Non sono registrate nel materiale
+disponibile per questa revisione. I comandi riportati di seguito
+permettono di controllare il rilascio già prodotto e la distribuzione;
+non costituiscono una procedura completa di ricostruzione della cattura.
 
 ## Artefatti locali
 
@@ -157,10 +183,39 @@ inclusi e ne confronta il contenuto dopo la scrittura dello ZIP.
 Una nuova esecuzione con gli stessi materiali verifica il pacchetto
 esistente; un pacchetto diverso non viene sovrascritto.
 
+Il checksum esterno si riferisce all'intero ZIP. Il file `SHA256SUMS`
+interno riguarda invece `traffico.pcap` e `README.txt` estratti.
+Non occorre aggiungere un ulteriore README come allegato separato.
+
 La distribuzione prevista sul Master avviene tramite CTFd.
 Lo studente analizza il PCAP sul proprio computer con Wireshark
 e un programma compatibile con ZIP AES-256, come 7-Zip.
 Non è previsto un servizio J1 attivo durante la gara.
+
+### Controllo del rilascio conservato
+
+Il blocco seguente confronta lo ZIP locale con l'impronta del rilascio
+descritto in questo documento. Eseguirlo dalla radice del repository,
+in PowerShell. Non ricostruisce né modifica i materiali.
+
+```powershell
+& {
+    $ErrorActionPreference = "Stop"
+    $j1Zip = ".\artifacts\j1\release\j1-traffico-in-chiaro.zip"
+    $j1Expected = "70985dd05c6f613a78453a43c8ee613e7f7d03ea016b8833ac81608ded68f543"
+    if (-not (Test-Path -LiteralPath $j1Zip -PathType Leaf)) {
+        throw "Pacchetto j1 mancante."
+    }
+    $j1Actual = (Get-FileHash -LiteralPath $j1Zip -Algorithm SHA256).Hash
+    if ($j1Actual -ne $j1Expected) { throw "Pacchetto diverso dal rilascio collaudato." }
+    Write-Output "Rilascio j1: OK"
+}
+```
+
+L'impronta identifica questa versione del pacchetto. Una revisione
+dei materiali richiede il confezionamento e l'aggiornamento dei checksum;
+non basta sostituire il valore atteso per dichiarare collaudata una
+versione differente.
 
 ## Riproducibilità
 
@@ -169,6 +224,13 @@ possono avere timestamp, parametri TCP e byte differenti.
 
 Per ripetere l'esercitazione con gli stessi materiali si conserva
 e distribuisce il pacchetto validato, identificato dal suo SHA-256.
+Una modifica al PCAP richiede un nuovo controllo del contenuto prima
+del confezionamento. Una modifica al README del partecipante richiede
+l'aggiornamento dello ZIP e dei relativi checksum. Una nuova flag
+richiede anche l'allineamento del valore atteso in CTFd.
+
+L'aggiornamento di questo README tecnico non modifica lo ZIP distribuito
+e non richiede una nuova cattura.
 
 ## Configurazione CTFd
 
@@ -179,7 +241,7 @@ e distribuisce il pacchetto validato, identificato dal suo SHA-256.
 | Nome | J1 - Traffico in chiaro |
 | Categoria | Analisi di rete |
 | Tipo | standard |
-| Punteggio | 100, fisso |
+| Punteggio | 100, fisso; valore provvisorio fino alla valutazione didattica |
 | Flag | static |
 | Confronto della flag | Case Sensitive |
 | Max Attempts | 0, senza limite totale |
@@ -187,7 +249,9 @@ e distribuisce il pacchetto validato, identificato dal suo SHA-256.
 | Prerequisiti della challenge | Nessuno |
 
 Durante il caricamento si mantiene lo stato Hidden.
-Dopo aver completato la configurazione si imposta Visible.
+Per le prove con l'account studente si imposta Visible.
+La pubblicazione nella sessione di laboratorio rimane un passaggio
+distinto, da coordinare con gli orari previsti.
 
 Il valore effettivo della flag si legge dal campo `flag` di
 `artifacts/j1/private/scenario.json`, relativo al pacchetto validato.
@@ -231,6 +295,49 @@ tra i materiali dell'autore. Non viene allegato alla challenge.
 Il pacchetto mantiene al proprio interno `traffico.pcap`, `README.txt`
 e `SHA256SUMS`. Il controllo degli hash non è richiesto per risolvere J1.
 
+### Confronto dello ZIP scaricato da CTFd
+
+Caricare lo ZIP di `artifacts/j1/release/` nella scheda della challenge.
+Con l'account studente scaricarlo dal portale e salvarlo con il nome
+originale in `artifacts/j1/download-check/`. La directory è destinata
+al controllo degli autori; il suo nome non è un requisito della challenge.
+
+Per predisporla, dalla radice del repository:
+
+```powershell
+New-Item -ItemType Directory -Force -Path .\artifacts\j1\download-check | Out-Null
+```
+
+Conservare qui il download effettivo, senza copiarlo da `release/`.
+Se il browser aggiunge un suffisso come `(1)`, identificare la copia
+appena scaricata e ripristinare il nome originale. Eseguire quindi:
+
+```powershell
+& {
+    $ErrorActionPreference = "Stop"
+    $j1Original = ".\artifacts\j1\release\j1-traffico-in-chiaro.zip"
+    $j1Downloaded = ".\artifacts\j1\download-check\j1-traffico-in-chiaro.zip"
+    foreach ($j1Path in @($j1Original, $j1Downloaded)) {
+        if (-not (Test-Path -LiteralPath $j1Path -PathType Leaf)) {
+            throw "File mancante: $j1Path"
+        }
+    }
+    $j1OriginalHash = (Get-FileHash -LiteralPath $j1Original -Algorithm SHA256).Hash
+    $j1DownloadHash = (Get-FileHash -LiteralPath $j1Downloaded -Algorithm SHA256).Hash
+    if ($j1OriginalHash -ne $j1DownloadHash) { throw "Download differente dal rilascio." }
+    Write-Output "Download j1: OK"
+}
+```
+
+Un file mancante viene segnalato separatamente da una differenza di
+checksum. La corrispondenza con il rilascio già collaudato conferma
+che il download contiene gli stessi byte, senza richiedere di ripetere
+la soluzione su una copia identica.
+
+Per la revisione delle intestazioni HTTP questo controllo è ancora
+da documentare. Non è necessario ripetere gli acquisti dei suggerimenti
+già verificati, dato che la configurazione CTFd e la flag sono invariate.
+
 ### Suggerimenti
 
 #### Orientamento
@@ -271,6 +378,10 @@ Le prove manuali con un account studente hanno confermato:
 Queste prove sono state svolte prima della revisione delle intestazioni
 HTTP. La revisione conserva lo stesso archivio interno e la stessa flag;
 il pacchetto aggiornato è identificato nella sezione Allegato.
+Il caricamento e il confronto del download di questa nuova versione
+non risultano ancora documentati. Dopo aver completato il confronto,
+registrarne l'esito senza attribuirlo retroattivamente alle prove
+eseguite sulla versione precedente.
 
 Il caricamento sul Master e la verifica dalla rete del laboratorio
 restano attività successive.

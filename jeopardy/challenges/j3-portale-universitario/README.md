@@ -27,21 +27,20 @@ sono in `player/README.txt`.
 
 Completati sul PC Windows di sviluppo:
 
-- costruzione dell'immagine Docker con configurazione privata;
-- superamento dei 18 test automatici durante la build;
-- avvio del container e superamento del controllo di salute;
-- correzione della configurazione di rete per l'accesso dal browser;
-- verifica del login con l'account fornito;
-- verifica dei collegamenti e del download dei documenti personali;
-- recupero del documento dell'altro studente mediante l'IDOR prevista.
+- costruzione dell'immagine Docker con configurazione privata e 18 test automatici superati;
+- avvio del container e correzione della rete per l'accesso dal browser;
+- login, elenco e download dei documenti personali di Alice;
+- recupero del documento di Marco mediante l'IDOR prevista;
+- esportazione dell'immagine e preparazione dei quattro file di rilascio;
+- caricamento del TAR e corrispondenza dell'immagine con il rapporto di build;
+- avvio e percorso di soluzione offline, con la stessa flag canonica;
+- configurazione della challenge nel CTFd locale;
+- confronto SHA-256 dei quattro file scaricati dal portale con il rilascio;
+- rifiuto della flag errata e accettazione della flag corretta, con 150 punti.
 
-Restano da completare il confezionamento dei materiali di distribuzione,
-la verifica del caricamento dell'immagine esportata, la configurazione
-di J3 nel CTFd locale e le prove degli invii con un account studente.
-
-Restano inoltre l'integrazione nel CTFd del Master, la verifica della
-distribuzione nel laboratorio e la valutazione della difficoltà con
-partecipanti. Le prove locali verificano il funzionamento tecnico;
+Il collaudo locale di J3 è completato. Restano l'integrazione nel CTFd
+del Master, la verifica della distribuzione nella rete del laboratorio
+e la valutazione della difficoltà con partecipanti. Le prove locali
 non costituiscono una validazione su tutte le postazioni BYOD.
 
 ## Sorgenti
@@ -110,7 +109,10 @@ L'immagine finale utilizza un utente non root.
 
 La flag canonica è conservata nei materiali privati e riutilizzata
 nelle build successive. Il rapporto registra gli identificativi
-dell'immagine e gli hash dei sorgenti utilizzati.
+dell'immagine e gli hash dei sorgenti utilizzati. Il suo campo
+`runtime_validation` è un promemoria generato dalla build e non viene
+aggiornato automaticamente dalle prove manuali. Gli esiti successivi
+sono documentati nelle sezioni di verifica di questo README.
 
 ### Avvio per il collaudo
 
@@ -173,8 +175,9 @@ generali sulla disconnessione dalle reti esterne.
 
 Il Compose imposta l'utente `10001:10001`, il filesystem in sola lettura,
 una directory temporanea in `tmpfs`, la rimozione delle capability
-e `no-new-privileges`. I limiti configurati sono 256 MB di memoria,
-una CPU e 64 processi. Questi valori sono impostazioni del container,
+e `no-new-privileges`. I limiti configurati sono 256 MiB di memoria,
+una quota CPU equivalente a un core e un limite PID di 64, che comprende
+anche i thread. Questi valori sono impostazioni del container,
 non i requisiti complessivi di Docker Desktop sulla postazione.
 
 Il controllo di salute interroga `/healthz` dall'interno del container.
@@ -191,10 +194,16 @@ Percorsi relativi alla radice del repository:
 | `artifacts/j3/private/build-lock.json` | Riferimento alla base Docker utilizzata. |
 | `artifacts/j3/build/context-*/` | Copie dei materiali passati a Docker durante le build. |
 | `artifacts/j3/build/build-report.json` | Rapporto di costruzione e hash dei sorgenti. |
+| `artifacts/j3/release/` | TAR, Compose, README del partecipante e checksum del rilascio. |
+| `artifacts/j3/download-check/` | Copie scaricate dal CTFd locale e confrontate con il rilascio. |
 
-L'immagine `girello/j3-portale-universitario:1.0` è presente nel runtime
-Docker utilizzato per la build. Finché non viene esportata, non esiste
-automaticamente un file TAR distribuibile nella cartella del progetto.
+L'immagine `girello/j3-portale-universitario:1.0` è stata esportata in
+`artifacts/j3/release/j3-portale-universitario.tar`. La build e
+l'esportazione sono passaggi distinti: `Build.ps1` costruisce l'immagine
+e salva il rapporto, ma non genera automaticamente il TAR.
+
+`download-check/` conserva le copie realmente scaricate da CTFd;
+non viene distribuita ai partecipanti e non contiene una nuova build.
 
 I materiali sotto `artifacts/` rimangono esclusi da Git.
 La copia privata di `scenario.json` non viene distribuita come allegato
@@ -219,6 +228,9 @@ Il collaudo manuale è stato eseguito dal browser del PC Windows.
 | Elenco dei documenti personali | Collegamenti ai documenti `1001` e `1003`. |
 | Download di un documento personale | Riuscito. |
 | Download autenticato del documento `1002` | Riuscito; confermata l'IDOR prevista. |
+| Caricamento del TAR esportato | Riuscito; identificativo dell'immagine coincidente con il rapporto di build. |
+| Avvio e utilizzo offline | Riusciti, con Wi-Fi disattivato. |
+| Flag nel documento di Marco dopo il caricamento | Coincidente con il valore canonico. |
 
 I collegamenti osservati nell'elenco sono:
 
@@ -244,32 +256,221 @@ mancante restano da valutare con partecipanti.
 
 ## Pacchetto di distribuzione
 
-Il confezionamento non è ancora completato. I materiali previsti sono:
+Il rilascio collaudato è conservato in `artifacts/j3/release/` e comprende
+quattro file separati, senza un ulteriore archivio ZIP:
 
-- immagine Docker esportata in un file TAR;
-- `compose.yaml`, copiato dalla directory `player`;
-- `README.txt`, con preparazione, accesso e gestione del container;
-- checksum dei materiali distribuiti.
+| File | Contenuto | Dimensione del rilascio verificato |
+| --- | --- | --- |
+| `j3-portale-universitario.tar` | Immagine Docker esportata. | 46 330 880 byte |
+| `compose.yaml` | Copia della configurazione in `player/`. | 850 byte |
+| `README.txt` | Copia delle istruzioni in `player/`. | 2 073 byte |
+| `SHA256SUMS` | Impronte SHA-256 dei tre file precedenti. | 254 byte |
 
-I nomi definitivi, i checksum e la procedura di confezionamento saranno
-registrati dopo la preparazione e la verifica dei file di rilascio.
-Il solo completamento della build non costituisce il collaudo
-del pacchetto esportato.
+L'esportazione è stata eseguita con `docker image save` dopo aver
+confrontato l'identificativo dell'immagine con il rapporto di build.
+Compose e README sono stati copiati da `player/`; successivamente
+sono stati calcolati i checksum dei tre materiali da distribuire.
+Le dimensioni riportate descrivono questo rilascio e possono cambiare
+quando vengono aggiornati i materiali.
 
-Il partecipante carica l'immagine già costruita con `docker load`,
-avvia il portale mediante Docker Compose e accede dal browser locale.
-Non deve eseguire `Build.ps1` né costruire l'applicazione dai sorgenti.
-Caricamento e avvio rientrano nella preparazione precedente al tempo
-di risoluzione.
+Per verificare il TAR, il container è stato arrestato e rimosso tramite
+Compose; l'immagine nominata è stata rimossa dal runtime e caricata
+nuovamente dal file esportato. L'identificativo recuperato coincideva
+con quello registrato nel rapporto di costruzione. Una successiva prova
+con Wi-Fi disattivato ha confermato caricamento, avvio, login, download
+e recupero della stessa flag attraverso il documento `1002`.
 
-Prima della distribuzione occorre verificare il caricamento del TAR,
-l'avvio con il Compose consegnato, il funzionamento offline e
-la corrispondenza della flag con il valore configurato in CTFd.
+Il partecipante segue `README.txt`: carica l'immagine con `docker load`,
+avvia il portale mediante il Compose consegnato e accede dal browser
+locale. Non deve eseguire `Build.ps1` né costruire l'applicazione dai
+sorgenti. La preparazione precede il tempo dedicato alla soluzione.
+
+I quattro allegati scaricati dal CTFd locale sono stati confrontati
+tramite SHA-256 con gli originali in `release/`: tutti coincidevano,
+compreso il file `SHA256SUMS`. Il controllo del manifest stesso è
+un confronto separato; il manifest elenca soltanto gli altri tre file.
 
 Il README tecnico e i controlli degli autori non sono allegati
 destinati ai partecipanti. Il percorso didattico avviene attraverso
 il portale con l'account assegnato; l'amministrazione del PC BYOD
 non impedisce tecnicamente l'ispezione dell'immagine Docker.
+
+### Comandi per preparare un rilascio
+
+I blocchi seguenti documentano la procedura usata e permettono di
+ripeterla su una nuova preparazione. Il rilascio locale descritto sopra
+è già collaudato: non occorre ricrearlo per aggiornare questo README.
+Eseguire ogni blocco completo in PowerShell dalla radice del repository.
+La creazione si ferma se `release/` esiste già, per conservare il rilascio.
+
+```powershell
+& {
+    $ErrorActionPreference = "Stop"
+    $j3Release = ".\artifacts\j3\release"
+    $j3Report = Get-Content -Raw .\artifacts\j3\build\build-report.json | ConvertFrom-Json
+    $j3Image = "girello/j3-portale-universitario:1.0"
+
+    git check-ignore -- artifacts/j3/release/j3-portale-universitario.tar
+    if ($LASTEXITCODE -ne 0) { throw "Il rilascio J3 deve essere escluso da Git." }
+
+    $j3Id = docker --context desktop-linux image inspect $j3Image --format '{{.Id}}'
+    if ($LASTEXITCODE -ne 0) { throw "Immagine J3 non disponibile." }
+    if ($j3Id -ne $j3Report.image_id) { throw "Immagine diversa da quella del rapporto." }
+    if (Test-Path -LiteralPath $j3Release) { throw "Release gia presente: conservarla." }
+
+    New-Item -ItemType Directory -Path $j3Release | Out-Null
+    docker --context desktop-linux image save --output "$j3Release\j3-portale-universitario.tar" $j3Image
+    if ($LASTEXITCODE -ne 0) { throw "Esportazione J3 non riuscita; rilascio incompleto." }
+
+    Copy-Item .\jeopardy\challenges\j3-portale-universitario\player\compose.yaml $j3Release
+    Copy-Item .\jeopardy\challenges\j3-portale-universitario\player\README.txt $j3Release
+    $j3Sums = foreach ($j3File in @("j3-portale-universitario.tar", "compose.yaml", "README.txt")) {
+        $j3Hash = (Get-FileHash -LiteralPath (Join-Path $j3Release $j3File) -Algorithm SHA256).Hash.ToLowerInvariant()
+        "$j3Hash  $j3File"
+    }
+    $j3Sums | Set-Content -LiteralPath "$j3Release\SHA256SUMS" -Encoding ASCII
+    Get-ChildItem -LiteralPath $j3Release -File | Select-Object Name, Length
+    Get-Content -LiteralPath "$j3Release\SHA256SUMS"
+}
+```
+
+Un errore dopo la creazione della cartella lascia un rilascio incompleto:
+non caricarlo su CTFd. La procedura non aggiorna automaticamente un
+rilascio già esistente né sostituisce la sua verifica.
+
+### Controllo dei checksum del rilascio
+
+```powershell
+& {
+    $ErrorActionPreference = "Stop"
+    $j3Release = ".\artifacts\j3\release"
+    $j3ExpectedNames = @("j3-portale-universitario.tar", "compose.yaml", "README.txt")
+    $j3Seen = @()
+    foreach ($j3Line in Get-Content -LiteralPath "$j3Release\SHA256SUMS") {
+        if ($j3Line -notmatch '^([0-9a-fA-F]{64})  (.+)$') { throw "Riga checksum non valida." }
+        $j3Expected = $Matches[1]
+        $j3File = $Matches[2]
+        if ($j3File -cnotin $j3ExpectedNames -or $j3File -cin $j3Seen) {
+            throw "Nome inatteso o duplicato nel manifest."
+        }
+        $j3Seen += $j3File
+        $j3Path = Join-Path $j3Release $j3File
+        if (-not (Test-Path -LiteralPath $j3Path -PathType Leaf)) { throw "File mancante: $j3File" }
+        $j3Actual = (Get-FileHash -LiteralPath $j3Path -Algorithm SHA256).Hash
+        if ($j3Actual -ne $j3Expected) { throw "Checksum non coincidente: $j3File" }
+        Write-Output "${j3File}: OK"
+    }
+    if ($j3Seen.Count -ne 3) { throw "Manifest incompleto." }
+}
+```
+
+### Caricamento del TAR e collaudo offline
+
+Nel collaudo è stata rimossa l'immagine nominata prima del caricamento,
+per verificare il recupero dal TAR. Il blocco seguente arresta e rimuove
+il container del progetto J3 e azzera il suo stato temporaneo.
+Eseguirlo soltanto quando si intende ripetere il collaudo, dopo il
+controllo dei checksum. Per la prova offline disattivare le connessioni
+esterne del PC prima di eseguirlo; nella prova svolta è stato disattivato
+il Wi-Fi. Docker Desktop deve rimanere avviato.
+
+```powershell
+& {
+    $ErrorActionPreference = "Stop"
+    $j3Compose = ".\artifacts\j3\release\compose.yaml"
+    $j3Tar = ".\artifacts\j3\release\j3-portale-universitario.tar"
+    $j3Image = "girello/j3-portale-universitario:1.0"
+    $j3Report = Get-Content -Raw .\artifacts\j3\build\build-report.json | ConvertFrom-Json
+    if (-not (Test-Path -LiteralPath $j3Tar -PathType Leaf)) { throw "TAR J3 mancante." }
+    if (-not (Test-Path -LiteralPath $j3Compose -PathType Leaf)) { throw "Compose J3 mancante." }
+
+    docker --context desktop-linux compose -f $j3Compose down
+    if ($LASTEXITCODE -ne 0) { throw "Arresto J3 non riuscito." }
+    docker --context desktop-linux image rm --no-prune $j3Image
+    if ($LASTEXITCODE -ne 0) { throw "Rimozione immagine non riuscita; non usare --force." }
+    docker --context desktop-linux load --input $j3Tar
+    if ($LASTEXITCODE -ne 0) { throw "Caricamento TAR non riuscito." }
+    $j3Id = docker --context desktop-linux image inspect $j3Image --format '{{.Id}}'
+    if ($LASTEXITCODE -ne 0) { throw "Immagine caricata non trovata." }
+    if ($j3Id -ne $j3Report.image_id) { throw "Image ID diverso dal rapporto." }
+    docker --context desktop-linux compose -f $j3Compose up -d --wait --pull never
+    if ($LASTEXITCODE -ne 0) { throw "Avvio J3 non riuscito." }
+    docker --context desktop-linux compose -f $j3Compose ps
+    if ($LASTEXITCODE -ne 0) { throw "Lettura stato J3 non riuscita." }
+}
+```
+
+Il blocco presuppone che l'immagine sia presente all'inizio, come nella
+prova eseguita. Su una postazione nuova basta caricare il TAR e avviare
+il Compose seguendo `player/README.txt`; non serve il rapporto degli autori.
+
+Dal browser verificare il portale su `http://127.0.0.1:18083`, accedere
+come Alice e scaricare un documento personale. Nella stessa scheda
+autenticata inserire poi:
+
+```text
+http://127.0.0.1:18083/documents/1002/download
+```
+
+Il documento riservato deve contenere la stessa flag canonica. Gli autori
+possono leggere il valore di confronto con:
+
+```powershell
+(Get-Content -Raw .\artifacts\j3\private\scenario.json | ConvertFrom-Json).flag
+```
+
+Non copiare tale valore nella documentazione pubblica. Dopo una
+ricreazione del container occorre autenticarsi nuovamente. Se il browser
+rimanda al login, completarlo e reinserire l'indirizzo del documento
+nella scheda autenticata: il login riporta all'elenco personale.
+
+### Confronto degli allegati scaricati da CTFd
+
+Caricare i quattro file di `release/` nella scheda J3. Con l'account
+studente scaricarli e conservarli in `artifacts/j3/download-check/`,
+mantenendo i nomi originali. Rimuovere eventuali suffissi aggiunti dal
+browser, come `(1)`, dopo aver identificato la copia appena scaricata.
+Non riempire questa cartella copiando gli originali da `release/`:
+il controllo deve riguardare i download effettivi.
+
+Per predisporre la cartella:
+
+```powershell
+New-Item -ItemType Directory -Force -Path .\artifacts\j3\download-check | Out-Null
+```
+
+Dopo avervi salvato i download:
+
+```powershell
+& {
+    $ErrorActionPreference = "Stop"
+    foreach ($j3File in @("j3-portale-universitario.tar", "compose.yaml", "README.txt", "SHA256SUMS")) {
+        $j3Original = Join-Path ".\artifacts\j3\release" $j3File
+        $j3Downloaded = Join-Path ".\artifacts\j3\download-check" $j3File
+        foreach ($j3Path in @($j3Original, $j3Downloaded)) {
+            if (-not (Test-Path -LiteralPath $j3Path -PathType Leaf)) {
+                throw "File mancante: $j3Path"
+            }
+        }
+        $j3OriginalHash = (Get-FileHash -LiteralPath $j3Original -Algorithm SHA256).Hash
+        $j3DownloadHash = (Get-FileHash -LiteralPath $j3Downloaded -Algorithm SHA256).Hash
+        if ($j3OriginalHash -ne $j3DownloadHash) { throw "Download differente: $j3File" }
+        Write-Output "${j3File}: OK"
+    }
+}
+```
+
+La prova svolta ha restituito `OK` per tutti e quattro i file. In un primo
+tentativo mancava il TAR nella cartella di controllo: il file assente
+non costituiva un'evidenza di corruzione. Il blocco sopra distingue
+esplicitamente un file mancante da una differenza di checksum.
+
+Le prove degli invii si eseguono dall'interfaccia CTFd: inviare prima
+`CRCTF{prova_errata}` e verificare il rifiuto senza incremento dei punti;
+inviare poi la flag canonica e verificare l'assegnazione di 150 punti
+senza acquisto di suggerimenti. Questi esiti sono già stati confermati
+nel collaudo locale; un account che ha già risolto J3 non riceve
+nuovamente i punti.
 
 ## Riproducibilità
 
@@ -284,6 +485,11 @@ il rilascio collaudato, identificato dai checksum. Il tag `1.0` da solo
 non garantisce l'identità dell'immagine, perché può essere riutilizzato
 da una build successiva.
 
+Il rapporto conserva gli hash dei file presenti al momento della build,
+compreso il README tecnico. L'aggiornamento di questo documento non
+modifica l'immagine collaudata e non richiede di riscrivere il rapporto
+storico né di ricostruire l'immagine.
+
 Una modifica applicativa richiede una nuova build e un nuovo collaudo.
 Una modifica al Compose richiede una verifica dell'avvio e della rete,
 oltre all'aggiornamento dei materiali di distribuzione. Una modifica
@@ -295,12 +501,13 @@ la copia canonica e il valore atteso in CTFd.
 
 ## Configurazione CTFd
 
-La configurazione seguente è prevista per J3; il caricamento
-e le prove nel CTFd locale non risultano ancora completati.
+J3 è configurata e verificata nel CTFd locale di sviluppo, versione 3.8.7,
+raggiungibile su `http://127.0.0.1:18080`.
+L'integrazione nel CTFd del Master rimane da eseguire.
 
 ### Parametri della challenge
 
-| Campo | Configurazione prevista |
+| Campo | Configurazione |
 | --- | --- |
 | Nome | J3 - Portale universitario |
 | Tipo | Standard |
@@ -311,7 +518,7 @@ e le prove nel CTFd locale non risultano ancora completati.
 | Prerequisiti della challenge | Nessuno |
 | Primo suggerimento | Gratuito |
 | Secondo suggerimento | 15 punti, con il primo come prerequisito |
-| Allegati | Immagine esportata, Compose, istruzioni e checksum da predisporre. |
+| Allegati | `j3-portale-universitario.tar`, `compose.yaml`, `README.txt`, `SHA256SUMS`. |
 
 La flag attesa deve corrispondere alla configurazione privata
 in `artifacts/j3/private/scenario.json` relativa all'immagine collaudata.
@@ -336,9 +543,11 @@ rispettando maiuscole, minuscole e simboli.
 
 ### Allegati
 
-Caricare soltanto i materiali di rilascio dopo il loro collaudo.
-Le istruzioni devono distinguere l'accesso a CTFd sul Master
-dall'accesso al portale locale su `http://127.0.0.1:18083`.
+Nel CTFd locale sono stati caricati i quattro file di `release/`
+elencati nella tabella. Le copie scaricate sono risultate identiche
+agli originali mediante confronto SHA-256.
+Le istruzioni distinguono l'accesso a CTFd dall'accesso al portale
+locale su `http://127.0.0.1:18083`.
 
 La copia privata della configurazione, i rapporti di build
 e questo README tecnico rimangono nei materiali degli autori.
@@ -369,13 +578,17 @@ viene descritta nel suggerimento operativo.
 
 ### Verifica funzionale locale
 
-Da completare dopo il confezionamento e il caricamento in CTFd:
+Le prove con un account studente hanno confermato:
 
-- download degli allegati e confronto con i checksum del rilascio;
+- download dei quattro allegati e corrispondenza SHA-256 con il rilascio;
 - rifiuto di una flag errata senza incremento del punteggio;
-- accettazione della flag corretta;
-- incremento di 150 punti per la soluzione senza acquisto di suggerimenti;
-- controllo della configurazione dei due suggerimenti.
+- accettazione della flag canonica recuperata dal portale;
+- assegnazione di 150 punti senza acquisto di suggerimenti.
+
+I suggerimenti seguono la configurazione descritta sopra. Queste prove
+non comprendono un nuovo acquisto del suggerimento a pagamento:
+il comportamento generale di sblocco e addebito era già stato verificato
+con J1.
 
 Durante la configurazione mantenere la challenge nascosta e renderla
 visibile per la prova con l'account studente. La pubblicazione
