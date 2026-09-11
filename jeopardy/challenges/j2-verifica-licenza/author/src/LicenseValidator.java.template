@@ -1,0 +1,31 @@
+package girello.j2;
+
+import java.util.Arrays;
+import java.util.Locale;
+
+public final class LicenseValidator {
+    private static final int[] EXPECTED = {__EXPECTED_VALUES__};
+
+    private LicenseValidator() { }
+
+    public static boolean isValid(String input) {
+        if (!hasValidFormat(input)) {
+            return false;
+        }
+        return matchesExpected(normalize(input));
+    }
+
+    static boolean hasValidFormat(String input) {
+        return input != null
+                && input.matches("[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}");
+    }
+
+    static String normalize(String input) {
+        return input.replace("-", "").toUpperCase(Locale.ROOT);
+    }
+
+    static boolean matchesExpected(String normalized) {
+        int[] permuted = CodeTransformer.permute(normalized);
+        return Arrays.equals(CodeTransformer.encode(permuted), EXPECTED);
+    }
+}
