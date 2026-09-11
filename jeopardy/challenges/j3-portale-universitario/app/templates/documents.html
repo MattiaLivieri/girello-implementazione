@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="account"><span>{{ g.user.full_name }}</span>
+  <form method="post" action="{{ url_for('logout') }}">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <button class="secondary" type="submit">Esci</button>
+  </form>
+</div>
+<section class="card">
+  <p class="eyebrow">AREA STUDENTI</p>
+  <h1>Documenti personali</h1>
+  <p>Le comunicazioni associate al tuo profilo.</p>
+  <ul class="documents">
+  {% for document in documents %}
+    <li><span>{{ document.title }}</span>
+      <a href="{{ url_for('download', document_id=document.id) }}">Scarica <span class="sr-only">{{ document.title }}</span></a>
+    </li>
+  {% endfor %}
+  </ul>
+</section>
+{% endblock %}

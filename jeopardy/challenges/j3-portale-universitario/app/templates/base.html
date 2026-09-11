@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Area studenti{% endblock %} · UniGirello</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header><div class="brand">UniGirello</div><span>Segreteria studenti</span></header>
+  <main>{% block content %}{% endblock %}</main>
+  <footer>Portale dimostrativo · Tutti i dati sono fittizi</footer>
+</body>
+</html>
