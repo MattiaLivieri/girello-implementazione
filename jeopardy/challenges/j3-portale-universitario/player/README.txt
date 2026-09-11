@@ -8,8 +8,8 @@ Tutti i personaggi e i dati appartengono a questa copia locale.
 
 PREPARAZIONE (PRIMA DEL TEMPO DI SOLUZIONE)
 Occorrono Docker con motore Linux amd64, Docker Compose e un browser.
-Su Windows utilizzare Docker Desktop in modalita Linux containers.
-L'immagine contiene gia le dipendenze e le risorse web.
+Su Windows utilizzare Docker Desktop in modalità Linux containers.
+L'immagine contiene già le dipendenze e le risorse web.
 Non occorre installare Python e non serve Internet durante la prova.
 
 Materiali della distribuzione finale:
@@ -42,7 +42,7 @@ OBIETTIVO E PERIMETRO
 Il percorso previsto usa il browser e le richieste HTTP alla propria
 copia del portale. Non richiede attacchi ad altri studenti, servizi
 esterni, tentativi sulle password o modifiche alla configurazione Docker.
-L'ispezione diretta dell'immagine, del filesystem o del database e
+L'ispezione diretta dell'immagine, del filesystem o del database è
 esterna al percorso dell'esercitazione.
 Inserire in CTFd la flag completa nel formato CRCTF{...}.
 

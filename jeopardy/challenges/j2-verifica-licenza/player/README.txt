@@ -17,13 +17,13 @@ i dodici caratteri ottenuti. Rispetta maiuscole, minuscole e simboli.
 
 Strumenti
 Un decompilatore Java da utilizzare offline, come Vineflower.
-Il JAR e' compilato per Java 17 e non ha dipendenze applicative esterne.
-L'analisi statica e' sufficiente a ricostruire la soluzione.
-L'esecuzione del verificatore e' facoltativa, con Java 17 o successivo:
+Il JAR è compilato per Java 17 e non ha dipendenze applicative esterne.
+L'analisi statica è sufficiente a ricostruire la soluzione.
+L'esecuzione del verificatore è facoltativa, con Java 17 o successivo:
 
 java -jar verifica-licenza.jar
 
-Il programma legge il codice dal terminale e indica se e' valido.
+Il programma legge il codice dal terminale e indica se è valido.
 Non richiede accesso alla rete. Modificarlo per accettare qualsiasi
 input non fornisce il codice da utilizzare nella flag.
 
