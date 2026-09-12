@@ -268,6 +268,10 @@ Il file rimane escluso dal versionamento Git e dagli allegati pubblici.
 
 ### Descrizione per i partecipanti
 
+Il blocco seguente contiene la descrizione della challenge
+destinata al campo Descrizione di CTFd.
+
+````markdown
 Una postazione ha consultato un archivio documentale interno.
 La cattura contiene le richieste alle risorse pubbliche e il trasferimento
 di un documento riservato. L'utente riutilizza la stessa password per
@@ -286,6 +290,7 @@ come 7-Zip. L'analisi si svolge offline sul proprio PC:
 non occorre contattare gli indirizzi presenti nella cattura.
 
 Inserisci la flag rispettando maiuscole, minuscole e simboli.
+````
 
 ### Allegato
 

@@ -473,6 +473,10 @@ dal versionamento Git e dagli allegati pubblici.
 
 ### Descrizione per i partecipanti
 
+Il blocco seguente contiene la descrizione della challenge
+destinata al campo Descrizione di CTFd.
+
+````markdown
 Hai accesso a un account ordinario su una macchina Linux predisposta
 per il laboratorio. Analizza i privilegi disponibili e individua
 una configurazione che consenta di leggere il file `/root/flag.txt`.
@@ -490,6 +494,7 @@ account. L'accesso offline al disco virtuale è escluso dall'esercitazione.
 
 Inserisci la flag completa nel formato `CRCTF{...}`, rispettando
 maiuscole, minuscole e simboli.
+````
 
 ### Allegati
 

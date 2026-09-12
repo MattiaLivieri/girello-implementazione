@@ -535,20 +535,23 @@ configurati impediscono il download anticipato.
 
 ### Descrizione per i partecipanti
 
-```text
+Il blocco seguente contiene la descrizione della challenge
+destinata al campo Descrizione di CTFd.
+
+````markdown
 Il portale universitario permette agli studenti di consultare
 e scaricare i propri documenti.
 
 Utilizza il portale J3 preparato sulla tua postazione e accedi
-con l'account di Alice indicato nel README.txt.
+con l'account di Alice indicato nel `README.txt`.
 
 Il tuo obiettivo è recuperare il documento riservato a Marco Bianchi,
 un altro studente fittizio della stessa applicazione, utilizzando
 l'account fornito. Il documento contiene la flag.
 
-Inserisci in CTFd la flag completa nel formato CRCTF{...},
+Inserisci in CTFd la flag completa nel formato `CRCTF{...}`,
 rispettando maiuscole, minuscole e simboli.
-```
+````
 
 ### Allegati
 

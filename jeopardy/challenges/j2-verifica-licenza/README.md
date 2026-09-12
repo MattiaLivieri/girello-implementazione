@@ -313,27 +313,31 @@ configurati impediscono il download anticipato.
 
 ### Descrizione per i partecipanti
 
-```text
+Il blocco seguente contiene la descrizione della challenge
+destinata al campo Descrizione di CTFd.
+
+````markdown
 Un programma verifica un codice di licenza prima di consentire
 l'accesso. Il controllo e i dati necessari alla verifica sono
 contenuti nel JAR.
 
-Scarica ed estrai j2-verifica-licenza.zip, quindi leggi README.txt.
-Analizza verifica-licenza.jar e ricostruisci il codice accettato.
+Durante la preparazione scarica ed estrai `j2-verifica-licenza.zip`
+e leggi `README.txt`. All'avvio della prova, analizza
+`verifica-licenza.jar` e ricostruisci il codice accettato.
 
-Il codice ha formato XXXX-XXXX-XXXX: ogni X rappresenta una
+Il codice ha formato `XXXX-XXXX-XXXX`: ogni X rappresenta una
 lettera ASCII o una cifra. I trattini sono obbligatori e gli
 spazi non sono ammessi. Il verificatore accetta anche le minuscole.
 
 Per costruire la flag, converti il codice in maiuscolo e rimuovi
 i trattini. Inserisci la risposta nel formato
-CRCTF{CODICE_NORMALIZZATO}, sostituendo CODICE_NORMALIZZATO
+`CRCTF{CODICE_NORMALIZZATO}`, sostituendo `CODICE_NORMALIZZATO`
 con i dodici caratteri ricostruiti.
 
 L'analisi statica con un decompilatore Java offline, come
 Vineflower, è sufficiente. L'esecuzione del verificatore
 è facoltativa e richiede Java 17 o successivo.
-```
+````
 
 ### Allegato
 
