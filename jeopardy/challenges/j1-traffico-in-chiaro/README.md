@@ -29,7 +29,7 @@ La successiva revisione delle intestazioni HTTP è stata verificata
 analizzando la nuova cattura e ricostruendo l'archivio trasferito.
 L'archivio interno e la flag sono rimasti invariati.
 
-L'integrazione nel CTFd locale è stata verificata mediante un account
+L'integrazione nel CTFd di sviluppo è stata verificata mediante un account
 studente: la flag corretta viene accettata e assegna il punteggio
 della challenge; lo sblocco del suggerimento a pagamento sottrae
 10 punti.
@@ -37,12 +37,14 @@ della challenge; lo sblocco del suggerimento a pagamento sottrae
 La configurazione e gli esiti sono descritti nella sezione
 Configurazione CTFd di questo documento.
 
-Resta da documentare il caricamento del pacchetto aggiornato nel CTFd
-locale e il confronto SHA-256 della copia scaricata dal portale.
-Il collaudo della nuova cattura non sostituisce questo controllo
-di distribuzione, anche se la flag è rimasta invariata.
+Anche il pacchetto aggiornato è stato caricato in CTFd di sviluppo
+e scaricato con l'account studente. Il confronto SHA-256 con il file
+di rilascio ha confermato l'identità dello ZIP distribuito.
+Questo controllo riguarda la distribuzione della versione aggiornata
+ed è distinto dalle prove degli invii e dei suggerimenti,
+eseguite prima della revisione HTTP.
 
-Restano inoltre il caricamento sul CTFd del Master, la verifica
+Restano inoltre il caricamento nell'istanza CTFd sul Master, la verifica
 dell'accesso e della distribuzione nella rete del laboratorio
 e la valutazione della difficoltà con partecipanti.
 
@@ -124,7 +126,7 @@ La directory `artifacts/` rimane esclusa dal versionamento Git.
 Configurazione riservata, testo estratto e log non sono inclusi
 nel pacchetto destinato ai partecipanti.
 
-## Esito della verifica locale
+## Esito della verifica nell'ambiente di sviluppo
 
 La cattura aggiornata contiene 84 pacchetti e sette richieste HTTP.
 Tcpdump riporta 84 pacchetti ricevuti dal filtro e zero pacchetti
@@ -240,18 +242,25 @@ e non richiede una nuova cattura.
 | --- | --- |
 | Nome | J1 - Traffico in chiaro |
 | Categoria | Analisi di rete |
-| Tipo | standard |
-| Punteggio | 100, fisso; valore provvisorio fino alla valutazione didattica |
-| Flag | static |
+| Tipo | `standard` |
+| Punteggio | 100 punti, fisso |
+| Tipo di flag | `static` |
 | Confronto della flag | Case Sensitive |
 | Max Attempts | 0, senza limite totale |
 | Connection Info | Vuoto |
 | Prerequisiti della challenge | Nessuno |
 
-Durante il caricamento si mantiene lo stato Hidden.
-Per le prove con l'account studente si imposta Visible.
-La pubblicazione nella sessione di laboratorio rimane un passaggio
-distinto, da coordinare con gli orari previsti.
+Punteggi e suggerimenti seguono le [regole comuni Jeopardy](../../README.md#challenge).
+
+Durante la configurazione si mantiene lo stato `Hidden`.
+Per le prove in CTFd di sviluppo con l'account studente
+si imposta `Visible`.
+
+La distribuzione nel laboratorio segue la distinzione tra
+[preparazione e avvio della prova](../../README.md#preparazione-e-avvio-della-prova):
+materiali e istruzioni devono essere accessibili prima del tempo
+di risoluzione. Il passaggio a `Visible` non basta se gli orari
+configurati impediscono il download anticipato.
 
 Il valore effettivo della flag si legge dal campo `flag` di
 `artifacts/j1/private/scenario.json`, relativo al pacchetto validato.
@@ -267,7 +276,8 @@ l'accesso al servizio e per proteggere l'archivio trasferito.
 Analizza `traffico.pcap`, ricostruisci il documento trasferito e recupera
 la flag contenuta al suo interno.
 
-Scarica ed estrai `j1-traffico-in-chiaro.zip`, quindi leggi `README.txt`.
+Durante la preparazione scarica ed estrai `j1-traffico-in-chiaro.zip`
+e leggi `README.txt`. Inizia l'analisi soltanto all'avvio della prova.
 Lo ZIP di distribuzione si estrae senza password; l'archivio presente
 nel traffico richiede invece la password da recuperare.
 
@@ -334,9 +344,10 @@ checksum. La corrispondenza con il rilascio già collaudato conferma
 che il download contiene gli stessi byte, senza richiedere di ripetere
 la soluzione su una copia identica.
 
-Per la revisione delle intestazioni HTTP questo controllo è ancora
-da documentare. Non è necessario ripetere gli acquisti dei suggerimenti
-già verificati, dato che la configurazione CTFd e la flag sono invariate.
+Il confronto sullo ZIP aggiornato è stato completato con esito
+coincidente. Il blocco permette di ripetere il controllo su una nuova
+distribuzione. Gli acquisti dei suggerimenti non sono stati ripetuti,
+poiché la configurazione CTFd e la flag sono rimaste invariate.
 
 ### Suggerimenti
 
@@ -351,7 +362,7 @@ dal documento riservato e osserva come viene autenticato l'accesso.
 #### Procedura operativa
 
 - Costo: 10 punti.
-- Prerequisito configurato: Orientamento.
+- Prerequisito: Orientamento.
 
 Nell'header Authorization, HTTP Basic rappresenta la coppia
 nomeutente:password in Base64, che è una codifica reversibile.
@@ -364,7 +375,7 @@ e utilizza la password recuperata.
 CTFd richiede un saldo sufficiente per acquistare il suggerimento
 a pagamento. Il costo viene sottratto al momento dello sblocco.
 
-### Verifica funzionale locale
+### Verifica funzionale in CTFd di sviluppo
 
 Ambiente: CTFd 3.8.7, istanza Girello - Jeopardy DEV sul PC di sviluppo,
 raggiungibile all'indirizzo [http://127.0.0.1:18080](http://127.0.0.1:18080).
@@ -378,10 +389,11 @@ Le prove manuali con un account studente hanno confermato:
 Queste prove sono state svolte prima della revisione delle intestazioni
 HTTP. La revisione conserva lo stesso archivio interno e la stessa flag;
 il pacchetto aggiornato è identificato nella sezione Allegato.
-Il caricamento e il confronto del download di questa nuova versione
-non risultano ancora documentati. Dopo aver completato il confronto,
-registrarne l'esito senza attribuirlo retroattivamente alle prove
-eseguite sulla versione precedente.
+Il caricamento e il confronto SHA-256 del download della versione
+aggiornata sono stati completati con esito coincidente.
+Questo risultato riguarda la distribuzione dello ZIP aggiornato;
+le prove degli invii e dei suggerimenti rimangono riferite
+alla configurazione verificata prima della revisione HTTP.
 
 Il caricamento sul Master e la verifica dalla rete del laboratorio
 restano attività successive.

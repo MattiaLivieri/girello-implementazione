@@ -28,24 +28,26 @@ Completate sul PC Windows di sviluppo:
 - esportazione dell'appliance OVA e calcolo del checksum;
 - importazione dell'OVA in una nuova VM e verifica della flag;
 - verifica del ripristino dello snapshot iniziale;
-- caricamento dell'OVA e del checksum nel CTFd locale;
-- confronto SHA-256 tra OVA originale e file scaricato dal portale.
+- caricamento dell'OVA, di `README.txt` e di `SHA256SUMS` in CTFd di sviluppo;
+- confronto SHA-256 dei tre allegati scaricati con i corrispondenti file di rilascio.
 
-L'integrazione nel CTFd locale è stata verificata mediante un account
+L'integrazione nel CTFd di sviluppo è stata verificata mediante un account
 studente: la flag errata viene rifiutata e quella corretta viene accettata.
 La configurazione e gli esiti sono descritti nella sezione
 Configurazione CTFd di questo documento.
 
 Il README del partecipante è mantenuto in `player/README.txt`.
 Il rilascio comprende anche una copia in `artifacts/j4/release/README.txt`,
-da allegare alla scheda CTFd insieme all'OVA e al checksum.
+allegata alla scheda CTFd insieme all'OVA e a `SHA256SUMS`.
 L'aggiunta delle istruzioni non richiede una nuova esportazione della VM.
 
-Il collaudo documentato del download riguarda l'OVA. Il caricamento
-e la leggibilità del nuovo README con l'account studente vanno confermati
-separatamente; non sono inclusi nelle verifiche già concluse dell'appliance.
+Il controllo della distribuzione comprende tutti e tre gli allegati,
+scaricati con l'account studente e confrontati mediante SHA-256
+con i corrispondenti file di rilascio. Il controllo di `README.txt`
+è distinto dal collaudo funzionale dell'appliance: l'aggiunta
+delle istruzioni non modifica l'OVA già verificata.
 
-Restano inoltre il caricamento sul CTFd del Master, la verifica della
+Restano inoltre il caricamento nell'istanza CTFd sul Master, la verifica della
 distribuzione nella rete del laboratorio e la valutazione della
 difficoltà con partecipanti.
 
@@ -236,7 +238,7 @@ repository, è:
 - `artifacts/j4/private/`: copia canonica della flag e materiali riservati.
 - `artifacts/j4/validation/`: file della VM importata per il collaudo.
 - `artifacts/j4/release/`: `j4-privilegi-linux.ova`, `SHA256SUMS` e `README.txt`.
-- `artifacts/j4/download-check/`: OVA scaricato dal CTFd locale per il confronto.
+- `artifacts/j4/download-check/`: OVA, `README.txt` e `SHA256SUMS` scaricati da CTFd di sviluppo per il confronto.
 
 La directory `artifacts/` rimane esclusa dal versionamento Git.
 Il controllo effettuato con `git ls-files -- artifacts` non ha
@@ -254,9 +256,9 @@ Il controllo del download è stato eseguito in `artifacts/j4/download-check/`
 nella nuova posizione. La posizione degli altri materiali va verificata nella postazione
 effettiva: non è documentato qui il trasferimento completo delle VM.
 Lo spostamento della repository non trasferisce automaticamente
-le VM registrate in VirtualBox né i volumi Docker del CTFd locale.
+le VM registrate in VirtualBox né i volumi Docker del CTFd di sviluppo.
 
-## Esito della verifica locale
+## Esito della verifica nell'ambiente di sviluppo
 
 La challenge è stata verificata nella VM di costruzione e poi in una
 nuova VM importata dall'OVA, denominata `Girello-J4-validation`.
@@ -319,7 +321,7 @@ spenta, utilizzando il percorso originario dei materiali:
 Per esportazioni successive il percorso di destinazione deve
 corrispondere all'organizzazione effettiva degli artefatti.
 
-L'OVA verificato ha una dimensione di 1 149 221 376 byte, circa 1,07 GiB.
+L'OVA verificata ha una dimensione di 1 149 221 376 byte, circa 1,07 GiB.
 
 SHA-256 dell'appliance verificata:
 
@@ -333,8 +335,12 @@ Il file `SHA256SUMS`, distribuito separatamente, contiene:
 c541e0d2ced8c505cadc4a437d9caa452bca6e76322b785847a2f5ac7deaea1f  j4-privilegi-linux.ova
 ```
 
-Il checksum si riferisce all'OVA. L'aggiunta del `README.txt` come
-file separato non modifica l'appliance né il suo hash.
+Il checksum si riferisce all'OVA. L'aggiunta o la modifica
+di `README.txt` come file separato non modifica l'appliance né il suo hash
+e non richiede di aggiornare questo `SHA256SUMS`.
+Il confronto del README con la copia scaricata rimane separato.
+Il manifest incluso nell'OVA è distinto dal file `SHA256SUMS`
+distribuito come allegato.
 
 Prima dell'esercitazione il partecipante verifica il checksum, importa
 l'OVA e collega la sola scheda di rete alla rete host-only dedicata.
@@ -348,7 +354,7 @@ Non si avviano contemporaneamente più copie con lo stesso indirizzo
 sulla stessa rete host-only.
 
 Dopo l'importazione e la configurazione della rete si crea lo snapshot
-`iniziale` a VM spenta, prima della soluzione. Gli snapshot della VM
+`iniziale` a VM spenta, prima dell'avvio della prova. Gli snapshot della VM
 di costruzione non vengono distribuiti come albero di snapshot nell'OVA.
 Per ricominciare si spegne la VM e si ripristina lo snapshot `iniziale`.
 
@@ -407,10 +413,11 @@ Per un confronto puntuale, salvare il nuovo download come
 }
 ```
 
-Questo confronto del nuovo README è una procedura da eseguire, non
-un esito già confermato. Il file `SHA256SUMS` distribuito continua a
-contenere il solo hash dell'OVA; il controllo separato del README
-non richiede di modificare quel file.
+Il confronto del `README.txt` scaricato è stato completato
+con esito coincidente, insieme a quello degli altri due allegati.
+Il blocco permette di ripetere il controllo dopo una nuova distribuzione.
+Il file `SHA256SUMS` contiene il solo hash dell'OVA: il confronto
+separato delle istruzioni non richiede di modificarlo.
 
 ## Riproducibilità
 
@@ -419,7 +426,7 @@ lo scenario. La costruzione comprende passaggi manuali e non prevede
 una pipeline completamente automatica.
 
 Installazioni, aggiornamenti ed esportazioni successive possono produrre
-byte differenti. Non viene dichiarata la generazione di OVA identici
+byte differenti. Non viene dichiarata la generazione di OVA identiche
 byte per byte.
 
 Per ripetere l'esercitazione con gli stessi materiali si conserva
@@ -430,6 +437,11 @@ Ogni nuova esportazione deve avere un checksum aggiornato e una verifica
 prima della distribuzione. Se viene generata una nuova flag, occorre
 allineare l'appliance, la copia canonica e il valore atteso in CTFd.
 
+L'aggiornamento di questo README tecnico non modifica la VM,
+l'OVA, le istruzioni distribuite o i relativi checksum.
+Non richiede una nuova esportazione né la modifica dei rapporti
+di collaudo già conservati.
+
 ## Configurazione CTFd
 
 ### Parametri della challenge
@@ -438,14 +450,22 @@ allineare l'appliance, la copia canonica e il valore atteso in CTFd.
 | --- | --- |
 | Nome | J4 - Privilegi Linux |
 | Categoria | Sicurezza Linux |
-| Tipo | standard |
-| Punteggio | 250, fisso; valore provvisorio fino alla valutazione didattica |
-| Flag | static |
+| Tipo | `standard` |
+| Punteggio | 250 punti, fisso |
+| Tipo di flag | `static` |
 | Confronto della flag | Case Sensitive |
 
-Durante il caricamento si mantiene lo stato Hidden.
-Per la verifica con l'account studente è stato impostato Visible.
-La pubblicazione nella sessione di laboratorio resta un'attività successiva.
+Punteggi e suggerimenti seguono le [regole comuni Jeopardy](../../README.md#challenge).
+
+Durante la configurazione si mantiene lo stato `Hidden`.
+Per la verifica in CTFd di sviluppo con l'account studente
+è stato impostato `Visible`.
+
+La distribuzione nel laboratorio segue la distinzione tra
+[preparazione e avvio della prova](../../README.md#preparazione-e-avvio-della-prova):
+materiali e istruzioni devono essere accessibili prima del tempo
+di risoluzione. Il passaggio a `Visible` non basta se gli orari
+configurati impediscono il download anticipato.
 
 Il valore effettivo della flag si legge dalla copia privata di
 `flag.txt` relativa all'appliance validata. Il file rimane escluso
@@ -479,14 +499,16 @@ La scheda deve distribuire i tre file della cartella `release/`:
 - `README.txt`;
 - `SHA256SUMS`.
 
-OVA e checksum sono già stati caricati nel CTFd locale. Il download
-dell'OVA coincide con l'appliance collaudata; il suo hash è riportato
-nella sezione Pacchetto di distribuzione.
+I tre allegati sono stati caricati in CTFd di sviluppo e scaricati
+con l'account studente. Il confronto SHA-256 con i file di rilascio
+ha confermato l'identità di tutti gli allegati.
+L'hash dell'OVA è riportato nella sezione Pacchetto di distribuzione.
 
-Il README completa i materiali destinati al partecipante. La verifica
-aggiuntiva consiste nel controllarne il download e la leggibilità
-con l'account studente. L'importazione e la soluzione della VM già
-collaudata non devono essere ripetute per la sola aggiunta del README.
+Il file `README.txt` completa i materiali destinati al partecipante.
+Per ogni successiva modifica alle istruzioni occorre aggiornare
+la copia distribuita e controllarne il download e la leggibilità.
+L'importazione e la soluzione della VM già collaudata non devono
+essere ripetute per una modifica al solo README.
 Le istruzioni e le credenziali del guest devono essere disponibili
 prima dell'inizio del tempo di risoluzione.
 
@@ -507,33 +529,33 @@ assegnate al tuo utente.
 #### Procedura operativa
 
 - Costo: 25 punti.
-- Prerequisito previsto: Orientamento.
+- Prerequisito: Orientamento.
 
 Usa `sudo -l` per elencare i comandi consentiti. Esamina le opzioni
 del programma autorizzato: oltre alla sua funzione principale,
 può eseguire altri comandi?
 
-Il costo corrisponde al 10% del punteggio attualmente assegnato a J4.
+Il costo corrisponde al 10% del punteggio della challenge.
 CTFd richiede un saldo sufficiente per acquistare il suggerimento
 a pagamento e sottrae il costo al momento dello sblocco.
 Questo comportamento generale è stato verificato con J1.
 
-### Verifica funzionale locale
+### Verifica funzionale in CTFd di sviluppo
 
 Ambiente: CTFd 3.8.7 sul PC di sviluppo, raggiungibile all'indirizzo
 [http://127.0.0.1:18080](http://127.0.0.1:18080).
 
 Le prove hanno confermato:
 
-- caricamento dell'OVA e del relativo checksum;
-- corrispondenza SHA-256 dell'OVA scaricato dal portale;
+- caricamento dell'OVA, di `README.txt` e di `SHA256SUMS`;
+- corrispondenza SHA-256 di tutti e tre gli allegati scaricati dal portale;
 - rifiuto di una flag errata inviata da un account studente;
 - accettazione della flag corretta dallo stesso account.
 
 I controlli generali sul funzionamento dei suggerimenti, già eseguiti
 con J1, non sono stati ripetuti.
 
-Il Compose locale espone CTFd direttamente sulla porta 18080, senza
+Il Compose di sviluppo espone CTFd direttamente sulla porta 18080, senza
 Nginx. Gli upload sono conservati nel volume Docker `ctfd_uploads`,
 montato in `/var/uploads`; non sono contenuti in `artifacts/ctfd-dev`.
 

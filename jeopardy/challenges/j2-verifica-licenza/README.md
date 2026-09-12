@@ -10,7 +10,8 @@ La soluzione non richiede di eseguire il programma della challenge.
 L'input ha forma `XXXX-XXXX-XXXX`, con lettere ASCII o cifre.
 I trattini sono obbligatori e gli spazi non sono ammessi.
 Le minuscole sono accettate. Il codice normalizzato contiene dodici
-caratteri maiuscoli senza trattini; la flag è `CRCTF{CODICE_NORMALIZZATO}`.
+caratteri senza trattini, con le lettere convertite in maiuscolo;
+la flag è `CRCTF{CODICE_NORMALIZZATO}`.
 
 Questo README documenta il lavoro degli autori e contiene dettagli
 della logica di verifica. Le istruzioni distribuite ai partecipanti
@@ -26,11 +27,11 @@ Completati sul PC Windows di sviluppo:
 - confronto della soluzione ricostruita con la configurazione privata;
 - verifica dell'accettazione della licenza nel JAR;
 - creazione e verifica del pacchetto di distribuzione;
-- configurazione della challenge, della flag e dei suggerimenti nel CTFd locale;
+- configurazione della challenge, della flag e dei suggerimenti nel CTFd di sviluppo;
 - verifica del checksum dello ZIP scaricato da CTFd;
 - verifica degli invii e del punteggio con un account studente.
 
-Restano l'integrazione nel CTFd del Master, la verifica della distribuzione
+Restano l'integrazione nell'istanza CTFd sul Master, la verifica della distribuzione
 nel laboratorio e la valutazione della difficoltà con partecipanti.
 Le prove locali verificano il funzionamento tecnico; non costituiscono
 una validazione su tutte le postazioni BYOD.
@@ -117,7 +118,7 @@ la configurazione privata. Le directory `work-*` vengono mantenute
 come evidenze locali. Questi materiali rimangono esclusi da Git.
 Il JAR di lavoro deve essere collaudato prima del confezionamento.
 
-## Esito della verifica locale
+## Esito della verifica nell'ambiente di sviluppo
 
 La build sul PC Windows ha superato **439 controlli automatici**.
 Il JAR ottenuto è stato decompilato con Vineflower 1.12.0.
@@ -278,28 +279,37 @@ né lo ZIP già distribuito e non richiede di ricompilarli.
 
 ## Configurazione CTFd
 
-J2 è configurata e verificata nel CTFd locale di sviluppo, versione 3.8.7,
+J2 è configurata e verificata nel CTFd di sviluppo, versione 3.8.7,
 raggiungibile su `http://127.0.0.1:18080`.
-L'integrazione nel CTFd del Master rimane da eseguire.
+L'integrazione nell'istanza CTFd sul Master rimane da eseguire.
 
 ### Parametri della challenge
 
-| Campo | Configurazione |
+| Campo | Valore |
 | --- | --- |
 | Nome | J2 - Verifica licenza |
-| Tipo | Standard |
 | Categoria | Reverse engineering |
-| Punteggio | 200, provvisorio fino alla valutazione didattica |
-| Flag | Statica, confronto case sensitive |
+| Tipo | `standard` |
+| Punteggio | 200 punti, fisso |
+| Tipo di flag | `static` |
+| Confronto della flag | Case Sensitive |
 | Limite totale degli invii | Nessuno (`Max Attempts` pari a 0) |
 | Prerequisiti della challenge | Nessuno |
 | Primo suggerimento | Gratuito |
 | Secondo suggerimento | 20 punti, con il primo come prerequisito |
 | Allegato | `j2-verifica-licenza.zip` |
 
+Punteggi e suggerimenti seguono le [regole comuni Jeopardy](../../README.md#challenge).
+
 La flag attesa è il valore del campo `flag` in
 `artifacts/j2/private/scenario.properties`, relativo al JAR collaudato.
 Il file privato non viene allegato alla challenge.
+
+La distribuzione nel laboratorio segue la distinzione tra
+[preparazione e avvio della prova](../../README.md#preparazione-e-avvio-della-prova):
+materiali e istruzioni devono essere accessibili prima del tempo
+di risoluzione. Il passaggio a `Visible` non basta se gli orari
+configurati impediscono il download anticipato.
 
 ### Descrizione per i partecipanti
 
@@ -377,7 +387,10 @@ ad esempio dopo il caricamento sul Master.
 
 ### Suggerimenti
 
-Primo suggerimento: **Orientamento**, costo 0, senza prerequisiti.
+#### Orientamento
+
+- Costo: 0 punti.
+- Prerequisiti: nessuno.
 
 ```text
 Segui il percorso dall'input al confronto finale. Distingui
@@ -385,8 +398,10 @@ i controlli sul formato dalle trasformazioni applicate ai
 caratteri e individua i valori con cui viene confrontato il risultato.
 ```
 
-Secondo suggerimento: **Procedura operativa**, costo 20,
-con Orientamento come prerequisito.
+#### Procedura operativa
+
+- Costo: 20 punti.
+- Prerequisito: Orientamento.
 
 ```text
 Decompila il JAR e osserva LicenseValidator e CodeTransformer.
@@ -399,14 +414,15 @@ nel codice normalizzato. Per provarlo nel verificatore,
 reinserisci i trattini ogni quattro caratteri.
 ```
 
-Il secondo suggerimento costa il 10% del punteggio iniziale.
+Il secondo suggerimento costa il 10% del punteggio della challenge.
 I controlli generali sul saldo necessario e sull'addebito al momento
 dello sblocco, già eseguiti con J1, non sono stati ripetuti per J2.
 
-### Verifica funzionale locale
+### Verifica funzionale in CTFd di sviluppo
 
-La challenge è stata mantenuta nascosta durante la configurazione
-e resa visibile per la prova con l'account studente.
+La challenge è stata mantenuta nello stato `Hidden` durante
+la configurazione e resa `Visible` per la prova con l'account studente
+in CTFd di sviluppo.
 
 | Verifica | Esito |
 | --- | --- |
@@ -417,5 +433,5 @@ e resa visibile per la prova con l'account studente.
 
 Il confronto dello ZIP scaricato conferma la distribuzione degli stessi
 byte già collaudati. La decompilazione non è stata ripetuta sulla copia
-identica. Questi esiti riguardano il CTFd locale; la distribuzione
+identica. Questi esiti riguardano il CTFd di sviluppo; la distribuzione
 tramite il Master richiede una verifica dedicata.

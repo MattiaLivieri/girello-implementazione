@@ -15,9 +15,9 @@ un documento che non compare nel proprio elenco. Questa vulnerabilità
 è un caso di IDOR (Insecure Direct Object Reference).
 
 Il portale viene eseguito in un container sul PC del partecipante.
-CTFd sul Master distribuisce i materiali, presenta i suggerimenti
-e riceve la flag. La preparazione dell'ambiente avviene prima
-dell'inizio del tempo di risoluzione.
+Nell'assetto del laboratorio, CTFd sul Master distribuisce i materiali,
+presenta i suggerimenti e riceve la flag. La preparazione dell'ambiente
+avviene prima dell'inizio del tempo di risoluzione.
 
 Questo README documenta il lavoro degli autori e contiene dettagli
 del percorso di soluzione. Le istruzioni distribuite ai partecipanti
@@ -34,12 +34,12 @@ Completati sul PC Windows di sviluppo:
 - esportazione dell'immagine e preparazione dei quattro file di rilascio;
 - caricamento del TAR e corrispondenza dell'immagine con il rapporto di build;
 - avvio e percorso di soluzione offline, con la stessa flag canonica;
-- configurazione della challenge nel CTFd locale;
+- configurazione della challenge nel CTFd di sviluppo;
 - confronto SHA-256 dei quattro file scaricati dal portale con il rilascio;
 - rifiuto della flag errata e accettazione della flag corretta, con 150 punti.
 
-Il collaudo locale di J3 è completato. Restano l'integrazione nel CTFd
-del Master, la verifica della distribuzione nella rete del laboratorio
+Il collaudo locale di J3 è completato. Restano l'integrazione nell'istanza CTFd
+sul Master, la verifica della distribuzione nella rete del laboratorio
 e la valutazione della difficoltà con partecipanti. Le prove locali
 non costituiscono una validazione su tutte le postazioni BYOD.
 
@@ -176,7 +176,7 @@ generali sulla disconnessione dalle reti esterne.
 Il Compose imposta l'utente `10001:10001`, il filesystem in sola lettura,
 una directory temporanea in `tmpfs`, la rimozione delle capability
 e `no-new-privileges`. I limiti configurati sono 256 MiB di memoria,
-una quota CPU equivalente a un core e un limite PID di 64, che comprende
+una quota CPU equivalente a una CPU logica e un limite PID di 64, che comprende
 anche i thread. Questi valori sono impostazioni del container,
 non i requisiti complessivi di Docker Desktop sulla postazione.
 
@@ -195,7 +195,7 @@ Percorsi relativi alla radice del repository:
 | `artifacts/j3/build/context-*/` | Copie dei materiali passati a Docker durante le build. |
 | `artifacts/j3/build/build-report.json` | Rapporto di costruzione e hash dei sorgenti. |
 | `artifacts/j3/release/` | TAR, Compose, README del partecipante e checksum del rilascio. |
-| `artifacts/j3/download-check/` | Copie scaricate dal CTFd locale e confrontate con il rilascio. |
+| `artifacts/j3/download-check/` | Copie scaricate dal CTFd di sviluppo e confrontate con il rilascio. |
 
 L'immagine `girello/j3-portale-universitario:1.0` è stata esportata in
 `artifacts/j3/release/j3-portale-universitario.tar`. La build e
@@ -210,7 +210,7 @@ La copia privata di `scenario.json` non viene distribuita come allegato
 separato. L'immagine contiene necessariamente i dati utilizzati
 dall'applicazione per presentare il documento con la flag.
 
-## Esito della verifica locale
+## Esito della verifica nell'ambiente di sviluppo
 
 La build ha superato **18 test automatici**. I controlli riguardano
 il comportamento dell'applicazione, compresa la vulnerabilità prevista
@@ -285,7 +285,7 @@ avvia il portale mediante il Compose consegnato e accede dal browser
 locale. Non deve eseguire `Build.ps1` né costruire l'applicazione dai
 sorgenti. La preparazione precede il tempo dedicato alla soluzione.
 
-I quattro allegati scaricati dal CTFd locale sono stati confrontati
+I quattro allegati scaricati dal CTFd di sviluppo sono stati confrontati
 tramite SHA-256 con gli originali in `release/`: tutti coincidevano,
 compreso il file `SHA256SUMS`. Il controllo del manifest stesso è
 un confronto separato; il manifest elenca soltanto gli altri tre file.
@@ -501,28 +501,37 @@ la copia canonica e il valore atteso in CTFd.
 
 ## Configurazione CTFd
 
-J3 è configurata e verificata nel CTFd locale di sviluppo, versione 3.8.7,
+J3 è configurata e verificata nel CTFd di sviluppo, versione 3.8.7,
 raggiungibile su `http://127.0.0.1:18080`.
-L'integrazione nel CTFd del Master rimane da eseguire.
+L'integrazione nell'istanza CTFd sul Master rimane da eseguire.
 
 ### Parametri della challenge
 
-| Campo | Configurazione |
+| Campo | Valore |
 | --- | --- |
 | Nome | J3 - Portale universitario |
-| Tipo | Standard |
 | Categoria | Web |
-| Punteggio | 150, provvisorio fino alla valutazione didattica |
-| Flag | Statica, confronto case sensitive |
+| Tipo | `standard` |
+| Punteggio | 150 punti, fisso |
+| Tipo di flag | `static` |
+| Confronto della flag | Case Sensitive |
 | Limite totale degli invii | Nessuno (`Max Attempts` pari a 0) |
 | Prerequisiti della challenge | Nessuno |
 | Primo suggerimento | Gratuito |
 | Secondo suggerimento | 15 punti, con il primo come prerequisito |
 | Allegati | `j3-portale-universitario.tar`, `compose.yaml`, `README.txt`, `SHA256SUMS`. |
 
+Punteggi e suggerimenti seguono le [regole comuni Jeopardy](../../README.md#challenge).
+
 La flag attesa deve corrispondere alla configurazione privata
 in `artifacts/j3/private/scenario.json` relativa all'immagine collaudata.
 Il valore effettivo non viene riportato in questo README.
+
+La distribuzione nel laboratorio segue la distinzione tra
+[preparazione e avvio della prova](../../README.md#preparazione-e-avvio-della-prova):
+materiali e istruzioni devono essere accessibili prima del tempo
+di risoluzione. Il passaggio a `Visible` non basta se gli orari
+configurati impediscono il download anticipato.
 
 ### Descrizione per i partecipanti
 
@@ -543,7 +552,7 @@ rispettando maiuscole, minuscole e simboli.
 
 ### Allegati
 
-Nel CTFd locale sono stati caricati i quattro file di `release/`
+Nel CTFd di sviluppo sono stati caricati i quattro file di `release/`
 elencati nella tabella. Le copie scaricate sono risultate identiche
 agli originali mediante confronto SHA-256.
 Le istruzioni distinguono l'accesso a CTFd dall'accesso al portale
@@ -554,15 +563,20 @@ e questo README tecnico rimangono nei materiali degli autori.
 
 ### Suggerimenti
 
-Primo suggerimento: **Orientamento**, costo 0, senza prerequisiti.
+#### Orientamento
+
+- Costo: 0 punti.
+- Prerequisiti: nessuno.
 
 ```text
 Osserva i collegamenti usati per scaricare i tuoi documenti.
 Quale parte del collegamento distingue un documento dall'altro?
 ```
 
-Secondo suggerimento: **Procedura operativa**, costo 15,
-con Orientamento come prerequisito.
+#### Procedura operativa
+
+- Costo: 15 punti.
+- Prerequisito: Orientamento.
 
 ```text
 Copia un collegamento di download e modifica l'identificativo
@@ -572,11 +586,11 @@ e prova il valore intermedio. Il server controlla anche
 che il documento richiesto appartenga al tuo account?
 ```
 
-Il secondo suggerimento costa il 10% del punteggio iniziale.
+Il secondo suggerimento costa il 10% del punteggio della challenge.
 La consegna indica l'obiettivo; la modifica esplicita dell'URL
 viene descritta nel suggerimento operativo.
 
-### Verifica funzionale locale
+### Verifica funzionale in CTFd di sviluppo
 
 Le prove con un account studente hanno confermato:
 
@@ -590,7 +604,7 @@ non comprendono un nuovo acquisto del suggerimento a pagamento:
 il comportamento generale di sblocco e addebito era già stato verificato
 con J1.
 
-Durante la configurazione mantenere la challenge nascosta e renderla
-visibile per la prova con l'account studente. La pubblicazione
-nella sessione di laboratorio e la verifica tramite il Master
-restano attività successive.
+Durante la configurazione mantenere la challenge nello stato `Hidden`
+e impostare `Visible` per la prova con l'account studente
+in CTFd di sviluppo. Il collaudo sul Master rimane distinto
+da queste verifiche.
