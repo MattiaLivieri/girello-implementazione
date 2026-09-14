@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Document Vault</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <main>
+    <header>
+      <p>GIRELLO</p>
+      <h1>Document Vault</h1>
+      <p>Il tuo archivio di documenti testuali.</p>
+    </header>
+
+    <p id="message" role="status" aria-live="polite"></p>
+
+    <section id="access">
+      <h2>Accedi o crea un account</h2>
+
+      <form id="auth-form">
+        <label>
+          Username
+          <input
+            name="username"
+            autocomplete="username"
+            pattern="[A-Za-z0-9_]{3,32}"
+            required
+          >
+        </label>
+        <small>Da 3 a 32 lettere, numeri o underscore.</small>
+
+        <label>
+          Password
+          <input
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            minlength="8"
+            maxlength="128"
+            required
+          >
+        </label>
+
+        <div class="actions">
+          <button type="submit" value="login">Accedi</button>
+          <button type="submit" value="register" class="secondary">
+            Crea account
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section id="vault" hidden>
+      <div class="actions">
+        <h2 id="identity"></h2>
+        <button id="logout" class="secondary">Esci</button>
+      </div>
+
+      <form id="upload-form">
+        <label>
+          Nuovo documento (.txt, UTF-8, massimo 64 KiB)
+          <input type="file" name="file" accept=".txt,text/plain" required>
+        </label>
+        <button type="submit">Carica documento</button>
+      </form>
+
+      <h2>I tuoi documenti</h2>
+      <p id="empty">Non hai ancora caricato documenti.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>ID</th>
+              <th>Byte</th>
+              <th>Azione</th>
+            </tr>
+          </thead>
+          <tbody id="documents"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
