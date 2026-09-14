@@ -1,0 +1,28 @@
+name: girello-ad-dev
+
+services:
+  document-vault:
+    build: ./services/document-vault
+    image: girello/document-vault:dev
+    platform: linux/amd64
+    ports:
+      # Sviluppo: il servizio e' raggiungibile soltanto dal localhost della VM.
+      - "127.0.0.1:8081:8081"
+    volumes:
+      # SQLite e documenti sopravvivono alla ricreazione del container.
+      - vault-data:/data
+    # Il filesystem dell'immagine e' in sola lettura; /data resta scrivibile.
+    read_only: true
+    tmpfs:
+      # Spazio temporaneo per Gunicorn e le richieste, senza dati persistenti.
+      - /tmp:rw,nosuid,nodev,size=32m,mode=1777
+    # Il servizio non richiede capability Linux ne' acquisizione di privilegi.
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    # In sviluppo avviamo e arrestiamo il servizio esplicitamente.
+    restart: "no"
+
+volumes:
+  vault-data:
