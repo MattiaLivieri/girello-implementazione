@@ -34,7 +34,7 @@ def try_add_stolen_flag(flag: models.Flag, attacker: int, current_round: int) ->
     stolen_key = CacheKeys.team_stolen_flags(attacker)
     with utils.redis_pipeline(transaction=True) as pipe:
         # optimization of redis request count
-        cached_stolen = pipe.exists(stolen_key).execute()
+        cached_stolen, = pipe.exists(stolen_key).execute()
 
         if not cached_stolen:
             cache_helper(

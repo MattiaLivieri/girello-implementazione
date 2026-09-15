@@ -16,3 +16,15 @@ del progetto.
 
 I checker specifici dei servizi Girello si trovano nella directory
 `checkers/`.
+
+## Adattamenti per il laboratorio offline
+
+Il frontend utilizza le risorse di Font Awesome distribuite localmente.
+Sono stati rimossi i riferimenti a Google Fonts e al foglio di stile
+remoto di Font Awesome, permettendo l'utilizzo dell'interfaccia senza
+accesso a Internet.
+
+È inoltre applicata una correzione alla gestione della cache delle flag.
+
+L'adattamento del frontend riguarda la versione compilata in
+`forcad/front/dist/`, utilizzata dal container Nginx.
