@@ -133,3 +133,41 @@ della golden image. Le spiegazioni didattiche rimangono nella documentazione
 degli autori, così non è necessario ripulire nuovamente i commenti al momento
 della distribuzione. La configurazione di rete del servizio verrà adattata
 all'ambiente di gara durante la preparazione delle VM.
+
+## Checker di Document Vault
+
+Il checker operativo si trova in `checkers/document-vault/checker.py`.
+Usa Python e la dipendenza indicata nel relativo `requirements.txt`.
+Esegue le normali operazioni HTTP del servizio e usa il protocollo `pfr`
+di ForcAD, con un solo posto per le flag (`places: 1`).
+
+| Azione | Comportamento |
+| --- | --- |
+| `check` | Verifica health, registrazione, login, identità, upload, elenco, download e revoca della sessione |
+| `put` | Crea un account distinto, carica la flag in un documento e ne verifica la rilettura |
+| `get` | Esegue un nuovo login con le credenziali conservate e confronta il documento con la flag attesa |
+
+Il PUT restituisce su stdout un JSON pubblico con `owner_id` e `document_id`.
+Su stderr restituisce un JSON privato con `username`, `password` e
+`document_id`, che ForcAD conserva e passa al GET. Entrambi rispettano il
+limite di 1024 byte del protocollo. Il checker non conserva stato su file.
+
+Il bersaglio passato dal motore è un indirizzo IPv4 o un hostname;
+la porta del servizio è 8081. Il checker usa gli identificativi dei propri
+documenti, quindi rimane compatibile con la correzione difensiva prevista.
+Le operazioni riuscite terminano con il logout. CHECK crea anche un account
+e un documento ordinario, separati dai depositi delle flag.
+
+Gli esiti sono `101 UP`, `102 CORRUPT`, `103 MUMBLE`, `104 DOWN` e
+`110 CHECK FAILED`. CORRUPT indica che il GET non recupera la flag attesa;
+MUMBLE indica una risposta HTTP o un comportamento applicativo non coerente;
+DOWN indica un errore di connessione o un timeout; CHECK FAILED indica
+argomenti, stato privato o errori interni del checker.
+
+Il timeout HTTP è di 3 secondi per connessione e attesa dei dati;
+non è un limite alla durata complessiva del processo, gestita da ForcAD.
+Le risposte vengono lette fino a un massimo di 128 KiB.
+
+Il checker è un componente della gestione centrale e non viene incluso
+nelle VM distribuite ai team. L'installazione nel worker ForcAD e il suo
+collegamento ai proxy appartengono al blocco di integrazione successivo.

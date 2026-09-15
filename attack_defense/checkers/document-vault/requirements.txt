@@ -1,0 +1,2 @@
+# Corrisponde alla dipendenza gia' presente nel worker ForcAD adottato.
+requests==2.31.0
