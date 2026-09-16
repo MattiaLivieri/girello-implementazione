@@ -1,0 +1,160 @@
+name: girello-ad
+
+# API, eventi e ticker usano lo stesso backend del motore.
+x-backend: &backend
+  image: girello/forcad-backend:local
+  build:
+    context: ./forcad
+    dockerfile: docker_config/services/Dockerfile
+  env_file: &storage-env
+    - ./forcad/docker_config/postgres_environment.env
+    - ./forcad/docker_config/redis_environment.env
+    - ./forcad/docker_config/rabbitmq_environment.env
+  restart: "no"
+
+# Worker e Flower riutilizzano l'immagine Celery prevista da ForcAD.
+x-worker: &worker
+  image: girello/forcad-worker:local
+  build:
+    context: ./forcad
+    dockerfile: docker_config/celery/Dockerfile
+  env_file: *storage-env
+  restart: "no"
+
+services:
+  postgres:
+    image: postgres:13.4-alpine
+    command: postgres --max-connections=200
+    env_file:
+      - ./forcad/docker_config/postgres_environment.env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: "no"
+
+  redis:
+    image: redis:6.2.5-alpine
+    command: ["sh", "-c", "redis-server --requirepass $$REDIS_PASSWORD"]
+    env_file:
+      - ./forcad/docker_config/redis_environment.env
+    sysctls:
+      net.core.somaxconn: 1024
+    restart: "no"
+
+  rabbitmq:
+    image: rabbitmq:3.9.7-management-alpine
+    hostname: rabbitmq
+    env_file:
+      - ./forcad/docker_config/rabbitmq_environment.env
+    restart: "no"
+
+  # Esegue l'inizializzazione nativa del motore quando richiesto.
+  initializer:
+    profiles: [setup]
+    image: girello/forcad-initializer:local
+    build:
+      context: ./forcad
+      dockerfile: docker_config/initializer/Dockerfile
+    env_file: *storage-env
+    environment:
+      CONFIG_PATH: /config.yml
+    volumes:
+      - ./forcad/config.yml:/config.yml:ro
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+    restart: "no"
+
+  celery:
+    <<: *worker
+    environment:
+      SERVICE: worker
+    # Il checker resta nella directory Girello ed è montato in lettura.
+    volumes:
+      - ./checkers/document-vault:/checkers/document-vault:ro
+    command:
+      - /bin/bash
+      - -ec
+      - >-
+        /await_start.sh && cd /app/services &&
+        exec celery -A tasks.app worker -E -l info --concurrency=2
+    networks:
+      default:
+        ipv4_address: 172.30.20.3
+
+  flower:
+    <<: *worker
+    environment:
+      SERVICE: flower
+    env_file:
+      - ./forcad/docker_config/postgres_environment.env
+      - ./forcad/docker_config/redis_environment.env
+      - ./forcad/docker_config/rabbitmq_environment.env
+      - ./forcad/docker_config/services/admin.env
+
+  client-api:
+    <<: *backend
+    environment:
+      SERVICE: api
+
+  admin-api:
+    <<: *backend
+    environment:
+      SERVICE: admin
+    env_file:
+      - ./forcad/docker_config/postgres_environment.env
+      - ./forcad/docker_config/redis_environment.env
+      - ./forcad/docker_config/rabbitmq_environment.env
+      - ./forcad/docker_config/services/admin.env
+
+  events:
+    <<: *backend
+    environment:
+      SERVICE: events
+
+  http-receiver:
+    <<: *backend
+    environment:
+      SERVICE: http_receiver
+
+  # Il ticker avvia e fa avanzare i round: lo attiveremo successivamente.
+  ticker:
+    <<: *backend
+    profiles: [gara]
+    environment:
+      SERVICE: ticker
+
+  nginx:
+    image: girello/forcad-web:local
+    build:
+      context: ./forcad
+      dockerfile: docker_config/nginx/Dockerfile
+      args:
+        DNS_RESOLVER: 127.0.0.11
+    ports:
+      # Destinazione già prevista dal proxy HTTP A&D del Master.
+      - "127.0.0.1:18080:80"
+    depends_on:
+      - flower
+      - client-api
+      - admin-api
+      - events
+      - http-receiver
+    restart: "no"
+
+volumes:
+  # Database della nuova installazione, indipendente dai dati della prova.
+  postgres-data:
+
+networks:
+  default:
+    name: girello_ad
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: br-girello-ad
+    ipam:
+      config:
+        - subnet: 172.30.20.0/24
+          gateway: 172.30.20.1
+          # Le assegnazioni automatiche lasciano libero l'IP .3 del worker.
+          ip_range: 172.30.20.128/25

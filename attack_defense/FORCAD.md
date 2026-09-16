@@ -28,3 +28,42 @@ accesso a Internet.
 
 L'adattamento del frontend riguarda la versione compilata in
 `forcad/front/dist/`, utilizzata dal container Nginx.
+
+## Configurazione sul Master
+
+L'installazione Girello usa `compose.forcad.yaml`, con nome progetto
+`girello-ad`. Le immagini sono costruite dai Dockerfile originali,
+includendo gli adattamenti locali del motore.
+
+`game.yml` contiene i parametri condivisi della gara: due team,
+Document Vault, round da 300 secondi e durata delle flag pari al round
+di deposito e ai due successivi. Gli indirizzi dei team nella
+configurazione sono quelli dei rispettivi ingressi proxy.
+
+Per il primo allestimento si costruisce l'immagine backend e si prepara
+`forcad/config.yml` a partire da `game.yml`, aggiungendo in `game`
+il campo `start_time` con la data e l'ora UTC di preparazione.
+Il comando nativo `control.py setup`, eseguito nell'immagine backend,
+completa la configurazione e genera credenziali e file di ambiente.
+Questi file locali sono esclusi da Git dalle regole originali di ForcAD.
+
+Una successiva modifica a `game.yml` non aggiorna automaticamente
+la configurazione caricata nel database.
+
+Il servizio `initializer`, nel profilo `setup`, inizializza il motore.
+Il servizio `ticker`, nel profilo `gara`, avvia i round ed è escluso
+dall'avvio iniziale dell'infrastruttura. I comandi di gestione usano
+esplicitamente `compose.forcad.yaml`; il Compose generato da
+`control.py setup` non viene usato per l'avvio Girello.
+
+Il worker esegue due processi Celery e monta in sola lettura il checker
+da `checkers/document-vault/`. Usa l'indirizzo `172.30.20.3`
+sul bridge `br-girello-ad`, coerentemente con il firewall del Master.
+
+Il frontend è pubblicato su `127.0.0.1:18080`, come previsto dal
+proxy HTTP del Master. Il database PostgreSQL usa un volume del
+progetto `girello-ad`, indipendente dai dati della prova iniziale.
+
+La configurazione predispone il percorso verso i servizi dei team.
+La verifica attraverso i proxy e l'avvio dei round appartengono
+al successivo blocco di integrazione.

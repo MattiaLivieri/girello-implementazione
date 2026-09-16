@@ -1,0 +1,38 @@
+# Parametri condivisi; il setup aggiunge data iniziale e credenziali locali.
+game:
+  mode: classic
+  round_time: 300
+
+  # La flag resta valida nel round di deposito e nei due successivi.
+  flag_lifetime: 2
+  timezone: UTC
+
+  # Parametri del punteggio ForcAD utilizzati nella prova.
+  default_score: 2500.0
+  game_hardness: 10.0
+  inflation: false
+  volga_attacks_mode: false
+
+  # Percorso dei checker all'interno del worker.
+  checkers_path: /checkers/
+  env_path: ""
+
+tasks:
+  - name: Document Vault
+    checker: document-vault/checker.py
+    checker_type: pfr
+
+    # Limite complessivo di ogni azione del checker, in secondi.
+    checker_timeout: 10
+    puts: 1
+    gets: 3
+    places: 1
+
+teams:
+  # Il proxy sul segmento del Team 2 porta ai servizi del Team 1.
+  - name: Team 1
+    ip: 10.77.2.3
+
+  # Il proxy sul segmento del Team 1 porta ai servizi del Team 2.
+  - name: Team 2
+    ip: 10.77.1.3
