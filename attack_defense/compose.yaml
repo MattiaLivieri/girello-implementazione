@@ -24,5 +24,23 @@ services:
     # In sviluppo avviamo e arrestiamo il servizio esplicitamente.
     restart: "no"
 
+  helpdesk:
+    build: ./services/helpdesk
+    image: girello/helpdesk:dev
+    platform: linux/amd64
+    ports:
+      - "127.0.0.1:8082:8082"
+    volumes:
+      - helpdesk-data:/data
+    read_only: true
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,size=32m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    restart: "no"
+
 volumes:
   vault-data:
+  helpdesk-data:
