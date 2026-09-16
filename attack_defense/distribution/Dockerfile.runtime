@@ -1,0 +1,20 @@
+# Base comune per Document Vault e HelpDesk.
+# Viene costruita con accesso a Internet e poi trasferita nella golden image.
+FROM python@sha256:ed86c82274b3c69b52fb5820f358f0bd7df0b603332063cb5c6e32bd220c3e6e
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /opt/girello
+
+# Usa direttamente i manifest dei servizi, senza duplicare le versioni.
+# Il contesto di costruzione e' attack_defense/services.
+COPY document-vault/requirements.txt ./requirements-document-vault.txt
+COPY helpdesk/requirements.txt ./requirements-helpdesk.txt
+
+# Installa tutte le dipendenze richieste dai due servizi.
+# Versioni incompatibili tra i manifest fanno fallire la costruzione.
+RUN pip install --no-cache-dir \
+        -r requirements-document-vault.txt \
+        -r requirements-helpdesk.txt \
+    && pip check
