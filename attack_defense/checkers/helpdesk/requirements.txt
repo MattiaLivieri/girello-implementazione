@@ -1,0 +1,2 @@
+# Stessa versione utilizzata dal checker Document Vault e dal worker ForcAD.
+requests==2.31.0
