@@ -1,9 +1,10 @@
 # Attack & Defense
-
 Questa cartella contiene i servizi e la configurazione di sviluppo della
-modalità Attack & Defense di Girello. Attualmente è presente Document Vault,
-un servizio di archiviazione documentale basato su Flask e SQLite.
+modalità Attack & Defense di Girello. Sono presenti Document Vault e
+HelpDesk API, entrambi basati su Flask e SQLite.
 
+Le istruzioni di Document Vault sono riportate di seguito.
+Per HelpDesk API, consultare [HELPDESK.md](HELPDESK.md).
 ## Document Vault
 
 Il servizio offre una pagina web e un'API per:
