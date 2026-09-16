@@ -69,9 +69,10 @@ services:
     <<: *worker
     environment:
       SERVICE: worker
-    # Il checker resta nella directory Girello ed è montato in lettura.
+    # I checker restano nella directory Girello e sono montati in lettura.
     volumes:
       - ./checkers/document-vault:/checkers/document-vault:ro
+      - ./checkers/helpdesk:/checkers/helpdesk:ro
     command:
       - /bin/bash
       - -ec
