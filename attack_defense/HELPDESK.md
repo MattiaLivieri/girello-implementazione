@@ -162,3 +162,22 @@ verificati nella VM di sviluppo.
 I test non sono inclusi nella repository in questa fase.
 La validazione nelle VM definitive e l'integrazione con il checker ForcAD
 sono attività successive.
+
+## Interfaccia web
+
+L'interfaccia è disponibile su `http://127.0.0.1:8082/` nel browser
+della VM di sviluppo. Usa HTML, CSS e JavaScript locali, senza dipendenze
+da servizi esterni.
+
+Permette di registrarsi, accedere, creare ticket, consultarli, cercarli
+nel titolo e modificarne lo stato. Titolo e contenuto dei ticket esistenti
+sono mostrati in sola lettura.
+
+La registrazione crea l'account; l'accesso avviene successivamente con
+il pulsante Accedi. Il token è conservato in sessionStorage e viene
+verificato tramite `/api/v1/me` al ricaricamento della pagina.
+Il logout revoca la sessione corrente e rimuove il token dalla scheda.
+
+I file della pagina si trovano in `services/helpdesk/static/`.
+Flask serve la pagina iniziale su `/` e le risorse sotto `/static/`.
+Tutte le operazioni applicative utilizzano gli endpoint API esistenti.

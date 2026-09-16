@@ -16,6 +16,7 @@ RUN groupadd --gid 10001 helpdesk \
     && chown helpdesk:helpdesk /data
 
 COPY app.py .
+COPY static ./static
 
 USER 10001:10001
 

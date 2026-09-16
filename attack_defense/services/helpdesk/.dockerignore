@@ -2,3 +2,5 @@
 !Dockerfile
 !requirements.txt
 !app.py
+!static/
+!static/**

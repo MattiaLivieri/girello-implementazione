@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HelpDesk</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <main>
+    <header>
+      <p>GIRELLO</p>
+      <h1>HelpDesk</h1>
+      <p>Apri e gestisci le tue richieste di assistenza.</p>
+    </header>
+
+    <noscript>Abilita JavaScript per utilizzare questa pagina.</noscript>
+    <p id="message" role="status" aria-live="polite"></p>
+
+    <section id="access">
+      <h2>Accedi o crea un account</h2>
+      <form id="auth-form">
+        <fieldset id="access-fields">
+          <label>
+            Username
+            <input name="username" autocomplete="username"
+              pattern="[A-Za-z0-9_]{3,32}" maxlength="32" required>
+          </label>
+          <small>Da 3 a 32 lettere ASCII, numeri o underscore.</small>
+
+          <label>
+            Password
+            <input name="password" type="password"
+              autocomplete="current-password" required>
+          </label>
+          <small>Da 8 a 128 caratteri.</small>
+
+          <div class="actions">
+            <button type="submit" value="login">Accedi</button>
+            <button type="submit" value="register" class="secondary">
+              Crea account
+            </button>
+          </div>
+        </fieldset>
+      </form>
+    </section>
+
+    <section id="desk" hidden>
+      <fieldset id="desk-fields">
+        <div class="actions">
+          <h2 id="identity"></h2>
+          <button id="logout" type="button" class="secondary">Esci</button>
+        </div>
+
+        <h2>Nuovo ticket</h2>
+        <form id="ticket-form">
+          <label>
+            Titolo
+            <input name="title" required>
+          </label>
+          <small>Da 1 a 120 caratteri, non solo spazi.</small>
+
+          <label>
+            Contenuto
+            <textarea name="body" rows="5" required></textarea>
+          </label>
+          <small>Testo UTF-8, massimo 16 KiB.</small>
+          <p><button type="submit">Crea ticket</button></p>
+        </form>
+
+        <h2>I tuoi ticket</h2>
+        <form id="search-form">
+          <label>
+            Cerca nel titolo
+            <input name="q" type="search" required>
+          </label>
+          <small>Da 1 a 256 caratteri. La ricerca distingue maiuscole e minuscole.</small>
+          <div class="actions">
+            <button type="submit">Cerca</button>
+            <button id="show-all" type="button" class="secondary">
+              Mostra tutti
+            </button>
+          </div>
+        </form>
+
+        <p id="results" role="status" aria-live="polite"></p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Titolo</th>
+                <th scope="col">Stato</th>
+                <th scope="col">Creato (UTC)</th>
+                <th scope="col">ID</th>
+                <th scope="col">Azione</th>
+              </tr>
+            </thead>
+            <tbody id="tickets"></tbody>
+          </table>
+        </div>
+
+        <section id="ticket-detail" aria-labelledby="ticket-title" hidden>
+          <h2 id="ticket-title" tabindex="-1"></h2>
+          <p id="ticket-meta"></p>
+          <pre id="ticket-body"></pre>
+          <div class="actions">
+            <button id="change-status" type="button"></button>
+            <button id="hide-detail" type="button" class="secondary">
+              Nascondi dettagli
+            </button>
+          </div>
+        </section>
+      </fieldset>
+    </section>
+  </main>
+</body>
+</html>

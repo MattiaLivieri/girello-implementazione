@@ -1,0 +1,76 @@
+:root {
+  font-family: system-ui, sans-serif;
+  color: #173042;
+  background: #edf2f5;
+}
+
+body { margin: 0; }
+main { max-width: 900px; margin: 3rem auto; padding: 0 1.2rem; }
+header > p:first-child { letter-spacing: .18em; font-weight: 700; color: #24746b; }
+h1 { font-size: 2.5rem; margin: .5rem 0; }
+h2 { font-size: 1.2rem; overflow-wrap: anywhere; }
+
+section {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #d4e0e6;
+}
+
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+label { display: block; margin: 1rem 0 .4rem; font-weight: 600; }
+
+input, textarea {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  margin-top: .4rem;
+  padding: .7rem;
+  border: 1px solid #9aafb8;
+  border-radius: 5px;
+  font: inherit;
+}
+
+textarea { resize: vertical; }
+small { color: #536a75; }
+
+button {
+  background: #216c62;
+  color: white;
+  border: 1px solid #216c62;
+  padding: .65rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font: inherit;
+}
+
+button.secondary { background: white; color: #216c62; }
+button:disabled { opacity: .6; cursor: wait; }
+
+button:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 3px solid #75b5ff;
+  outline-offset: 2px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+#ticket-form { margin-bottom: 2rem; }
+#message { min-height: 1.5rem; color: #216c62; overflow-wrap: anywhere; }
+#message.error { color: #a62032; }
+#results, #ticket-meta { color: #536a75; overflow-wrap: anywhere; }
+#ticket-detail { margin-top: 1.5rem; background: #f5f8fa; }
+#ticket-body { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; line-height: 1.5; }
+
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 720px; text-align: left; }
+th, td { padding: .75rem .4rem; border-bottom: 1px solid #d4e0e6; }
+td:first-child { overflow-wrap: anywhere; max-width: 18rem; }
+td:nth-child(4) { font-family: monospace; font-size: .85rem; overflow-wrap: anywhere; }
+
+[hidden] { display: none !important; }

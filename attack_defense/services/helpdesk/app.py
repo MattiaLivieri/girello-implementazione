@@ -26,7 +26,7 @@ def search_tickets(connection, owner_id, q):
     return [dict(row) for row in rows]
 
 def create_app(data_dir=None):
-    app = Flask(__name__, static_folder=None)
+    app = Flask(__name__)
     app.config["MAX_CONTENT_LENGTH"] = 128 * 1024
 
     storage_dir = Path(
@@ -180,6 +180,12 @@ def create_app(data_dir=None):
         response.headers["Cache-Control"] = "no-store"
         response.headers["X-Content-Type-Options"] = "nosniff"
         return response
+
+
+
+    @app.get("/")
+    def index():
+        return app.send_static_file("index.html")
 
     @app.get("/health")
     def health():
