@@ -1,0 +1,34 @@
+# Base locale contenente Python e le dipendenze dei servizi.
+FROM girello/ad-runtime:1
+
+ENV VAULT_DATA_DIR=/data
+
+WORKDIR /app
+
+# Controlla i requisiti usando le librerie gia' installate.
+COPY requirements.txt .
+RUN pip install --no-index --no-cache-dir -r requirements.txt \
+    && pip check
+
+# Mantiene lo stesso utente e gli stessi permessi del servizio originale.
+RUN groupadd --gid 10001 vault \
+    && useradd --uid 10001 --gid vault --no-create-home vault \
+    && mkdir /data \
+    && chown vault:vault /data
+
+COPY app.py .
+COPY static/ ./static/
+
+USER 10001:10001
+
+EXPOSE 8081
+
+CMD ["gunicorn", \
+     "--bind", "0.0.0.0:8081", \
+     "--workers", "1", \
+     "--threads", "2", \
+     "--timeout", "30", \
+     "--worker-tmp-dir", "/tmp", \
+     "--access-logfile", "-", \
+     "--error-logfile", "-", \
+     "app:create_app()"]

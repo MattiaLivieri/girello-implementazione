@@ -1,0 +1,48 @@
+name: girello-ad-team
+
+services:
+  document-vault:
+    build:
+      context: ./services/document-vault
+      network: none
+      pull: false
+    image: girello/document-vault:team
+    platform: linux/amd64
+    pull_policy: never
+    ports:
+      - "0.0.0.0:8081:8081"
+    volumes:
+      - vault-data:/data
+    read_only: true
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,size=32m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+
+  helpdesk:
+    build:
+      context: ./services/helpdesk
+      network: none
+      pull: false
+    image: girello/helpdesk:team
+    platform: linux/amd64
+    pull_policy: never
+    ports:
+      - "0.0.0.0:8082:8082"
+    volumes:
+      - helpdesk-data:/data
+    read_only: true
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,size=32m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+
+volumes:
+  vault-data:
+  helpdesk-data:
