@@ -49,6 +49,7 @@ for service in document-vault helpdesk; do
 done
 
 cp -- "$script_dir/compose.team.yaml" "$output_dir/compose.yaml"
+cp -- "$script_dir/README.team.md" "$output_dir/README.md"
 
 # Salva l'immagine, senza container o volumi. La redirezione resta dell'utente.
 sudo docker image save "$runtime_image" > "$output_dir/runtime.tar"
