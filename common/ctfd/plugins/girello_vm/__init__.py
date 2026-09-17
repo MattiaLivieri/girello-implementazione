@@ -2,7 +2,7 @@
 
 import os
 
-from flask import Blueprint, Response, abort, render_template
+from flask import Blueprint, Response, abort, render_template, request
 
 from CTFd.plugins import register_user_page_menu_bar
 from CTFd.utils.decorators import authed_only
@@ -17,12 +17,16 @@ VMS = {
         "filename": "girello-team1.ova",
         "address": "10.77.1.10/24",
         "sha256": "29a76ae656c9e718412c3a5c95ddb5714c8d82063486a8c97562ade5ffe12442",
+        "attack_data_url": "http://10.77.1.2:8080/api/client/attack_data/",
+        "target_ip": "10.77.1.3",
     },
     "team2": {
         "label": "Team 2",
         "filename": "girello-team2.ova",
         "address": "10.77.2.10/24",
         "sha256": "2a5de0f6be4a6aed54d9d201d566c3cf2fdba94dd987ccb9eed7d6771d3886c9",
+        "attack_data_url": "http://10.77.2.2:8080/api/client/attack_data/",
+        "target_ip": "10.77.2.3",
     },
 }
 
@@ -63,9 +67,16 @@ def private_response(response):
 @vm_pages.get("")
 @authed_only
 def index():
+    # La copia evita di modificare i metadati condivisi tra le richieste.
+    vm = assigned_vm().copy()
+
+    # Dal portale locale del Master il feed usa l'ingresso sul loopback.
+    if request.host.split(":", 1)[0] in ("127.0.0.1", "localhost"):
+        vm["attack_data_url"] = "http://127.0.0.1:18080/api/client/attack_data/"
+
     return render_template(
         "plugins/girello_vm/templates/download.html",
-        vm=assigned_vm(),
+        vm=vm,
         version=VERSION,
     )
 

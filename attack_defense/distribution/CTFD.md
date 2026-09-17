@@ -83,3 +83,31 @@ Durante la prova generale, ciascun PC scarica OVA e checksum dal portale,
 verifica il checksum e importa la VM. La scheda in bridge va associata
 alla Ethernet collegata al segmento della propria squadra.
 Le VM originali sul Master rimangono spente.
+
+## Identificativi pubblici di gara
+
+La pagina delle VM include il collegamento al feed ForcAD
+`/api/client/attack_data/`, accessibile durante l'esercitazione.
+
+| Squadra | Ingresso ForcAD | Bersaglio avversario nel feed |
+| --- | --- | --- |
+| Team 1 | http://10.77.1.2:8080 | 10.77.1.3 |
+| Team 2 | http://10.77.2.2:8080 | 10.77.2.3 |
+
+Document Vault pubblica owner_id e document_id.
+HelpDesk pubblica owner_id e ticket_id.
+Gli identificativi appartengono ai rispettivi servizi.
+Il feed contiene tutte le squadre e conserva ciascuna coppia
+di identificativi come stringa JSON nell'elenco del bersaglio.
+
+Gli identificativi diventano disponibili dopo il deposito riuscito
+del checker. Aggiorna la pagina per consultarli. Il feed contiene
+i depositi del round corrente e dei due precedenti; una flag può
+scadere se cambia il round tra la consultazione e l'invio.
+
+Consultando CTFd sul Master tramite `127.0.0.1` o `localhost`,
+il pulsante degli identificativi apre il feed locale su
+`http://127.0.0.1:18080/api/client/attack_data/`.
+Dai portali dei segmenti A&D usa l'ingresso ForcAD della squadra.
+ForcAD deve essere avviato; le VM delle squadre possono restare spente
+per consultare i depositi già conservati nel database.

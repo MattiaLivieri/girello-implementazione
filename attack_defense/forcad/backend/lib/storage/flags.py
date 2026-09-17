@@ -9,7 +9,7 @@ from lib.storage.keys import CacheKeys
 _GET_UNEXPIRED_FLAGS_QUERY = """
 SELECT t.ip, f.task_id, f.public_flag_data FROM Flags f
 INNER JOIN Teams t on f.team_id = t.id
-WHERE f.round >= %s AND f.task_id IN %s
+WHERE f.round BETWEEN %s AND %s AND f.task_id IN %s
 """
 
 _GET_RANDOM_ROUND_FLAG_QUERY = """
@@ -178,7 +178,10 @@ def get_attack_data(
 
     if task_ids:
         with utils.db_cursor() as (_, curs):
-            curs.execute(_GET_UNEXPIRED_FLAGS_QUERY, (need_round, task_ids))
+            curs.execute(
+           _GET_UNEXPIRED_FLAGS_QUERY,
+            (need_round, current_round, task_ids),
+            )
             flags = curs.fetchall()
     else:
         flags = []

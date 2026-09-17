@@ -55,5 +55,28 @@
     e HelpDesk su <code>http://127.0.0.1:8082</code>.
     L'account del portale e l'accesso alla VM sono distinti.
   </p>
+
+  <h2 class="h4 mt-4">Identificativi pubblici di gara</h2>
+  <p>
+    Durante l'esercitazione, consulta gli identificativi pubblicati dal motore:
+  </p>
+  <p>
+    <a class="btn btn-outline-primary" href="{{ vm.attack_data_url }}"
+       target="_blank" rel="noopener">Apri gli identificativi pubblici</a>
+  </p>
+  <p>
+    Il feed contiene tutte le squadre. Per i servizi avversari consulta
+    la voce <code>{{ vm.target_ip }}</code> all'interno di ciascun servizio:
+  </p>
+  <ul>
+    <li>Document Vault: <code>owner_id</code> e <code>document_id</code>.</li>
+    <li>HelpDesk: <code>owner_id</code> e <code>ticket_id</code>.</li>
+  </ul>
+  <p>
+    Gli identificativi diventano disponibili dopo il deposito riuscito
+    del checker. Aggiorna la pagina per consultarli. Il feed contiene
+    i depositi del round corrente e dei due precedenti; una flag può
+    scadere se cambia il round tra la consultazione e l'invio.
+  </p>
 </div>
 {% endblock %}

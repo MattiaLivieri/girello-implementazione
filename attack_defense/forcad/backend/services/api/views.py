@@ -1,5 +1,5 @@
 from flask import Blueprint
-from flask import jsonify, make_response
+from flask import jsonify
 
 from lib import storage
 
@@ -27,11 +27,18 @@ def get_game_config():
 
 @client_bp.route('/attack_data/')
 def serve_attack_data():
-    attack_data = storage.attacks.get_attack_data()
-    response = make_response(attack_data)
-    response.headers['Content-Type'] = 'application/json'
-    return response
+    # Legge i depositi riusciti senza attendere il cambio di round.
+    current_round = storage.game.get_real_round_from_db()
+    tasks = [
+        task for task in storage.tasks.get_tasks()
+        if task.checker_provides_public_flag_data
+    ]
+    attack_data = storage.flags.get_attack_data(current_round, tasks)
+    response = jsonify(attack_data)
 
+    # Una nuova richiesta deve vedere depositi e scadenze aggiornati.
+    response.headers['Cache-Control'] = 'no-store'
+    return response
 
 @client_bp.route('/teams/<int:team_id>/')
 def get_team_history(team_id):
