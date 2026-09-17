@@ -65,6 +65,54 @@ con sorgenti applicativi riferiti al commit `57ab325`:
   dei contenuti vuoti; dati delle sessioni rimossi da Firefox;
 - nome di sistema `girello-golden` e risoluzione IPv4 locale verificati.
 
-Restano da completare la preparazione delle due VM delle squadre,
-la validazione del percorso worker-proxy-servizi, i round reali
-ForcAD e l'esportazione degli artefatti finali.
+
+Successivamente sono stati preparati i cloni `girello-team1` e
+`girello-team2`, con hostname e machine-id distinti e indirizzi statici
+rispettivamente `10.77.1.10/24` e `10.77.2.10/24`,
+senza gateway o DNS e con IPv6 disabilitato.
+
+Dopo gli stalli RCU osservati su Team2, i moduli `vboxguest` e `vboxsf`
+sono stati esclusi persistentemente tramite GRUB nelle due VM e nella
+golden. Nei successivi avvii controllati gli stalli non si sono ripresentati
+e i servizi hanno risposto correttamente. Questa configurazione costituisce
+un workaround verificato; la causa precisa non è stata accertata.
+Gli appunti condivisi e le cartelle condivise VirtualBox non sono disponibili.
+
+La golden aggiornata è conservata nello snapshot `golden-pronta-v2`.
+Le OVA sono state esportate in `/srv/girello/distribution/ad/v1/`.
+La distribuzione attraverso CTFd è descritta in [CTFD.md](CTFD.md).
+## Prova integrata — 17 settembre 2026
+
+La prova è stata eseguita con il Master e due PC partecipanti,
+ciascuno con la VM della propria squadra.
+
+Risultati verificati:
+
+- download delle due OVA tramite CTFd, checksum SHA-256 corrispondenti,
+  importazione e avvio sui PC partecipanti;
+- raggiungibilità di entrambi i servizi di entrambe le squadre
+  dal worker attraverso i proxy del Master;
+- esecuzione ForcAD fino al round 6, con round da 300 secondi;
+- deposito e recupero delle flag riusciti per entrambi i servizi
+  di entrambe le squadre;
+- accettazione di una flag di Document Vault di Team 2 inviata
+  da Team 1, con aggiornamento dei contatori e dei punti;
+- rilevazione dell'arresto di HelpDesk di Team 2 al round 5,
+  mentre gli altri servizi restavano disponibili;
+- ritorno del servizio a UP al round 6, conservando il conteggio
+  di cinque controlli superati su sei;
+- arresto di ForcAD e ripristino del profilo default del Master.
+
+La classifica pubblica viene aggiornata al cambio di round con
+i risultati del round appena concluso. Il punteggio totale somma,
+per ciascun servizio, i punti flag moltiplicati per il rapporto
+tra controlli superati e controlli eseguiti.
+
+La prova di invio usa una flag recuperata dal Master e verifica
+ricezione, attribuzione e punteggio. Non documenta l'acquisizione
+tramite exploit, l'invio nella direzione opposta o il rifiuto
+di una submission duplicata.
+
+L'implementazione funzionale A&D del prototipo è conclusa nel
+perimetro verificato. Il modulo web per l'invio delle flag
+rimane uno sviluppo successivo.

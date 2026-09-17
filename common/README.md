@@ -19,7 +19,8 @@ I collegamenti seguenti sono relativi a questa directory del repository.
 | [scripts/girello-mode.sh](scripts/girello-mode.sh) | Coordina cambio di rete, applicazione del firewall e selezione degli ingressi Nginx. |
 | [scripts/jeopardy-firewall.sh](scripts/jeopardy-firewall.sh) | Applica o rimuove il filtro del Master per Jeopardy. |
 | [scripts/ad-firewall.sh](scripts/ad-firewall.sh) | Applica o rimuove il filtro del Master per A&D. |
-
+| [ctfd/plugins/girello_vm/](ctfd/plugins/girello_vm/) | Assegna a due utenti CTFd i download delle VM A&D. |
+| [nginx/vm-downloads.conf](nginx/vm-downloads.conf) | Trasferisce le OVA attraverso un percorso interno, dopo l'autorizzazione di CTFd. |
 ## Ambiente di riferimento
 
 La configurazione riguarda un ODROID H4+ con Debian 13, architettura amd64 e due
@@ -434,3 +435,13 @@ Nginx `127.0.0.1:80`, `Result=success` ed `ExecMainStatus=0`.
 Infine, `sudo girello-mode default` deve ripristinare la connessione ordinaria.
 Un avvio effettuato già in modalità ordinaria può lasciare assente
 `/run/girello/mode`, perché il servizio di sospensione non deve intervenire.
+
+
+## Distribuzione delle VM A&D
+
+La pagina `/girello/vm` permette agli utenti assegnati di scaricare
+la propria OVA e il checksum. Gli artefatti rimangono sul Master in
+`/srv/girello/distribution/ad/`, fuori dalla repository.
+
+Configurazione e verifiche sono descritte in
+[Distribuzione con CTFd](../attack_defense/distribution/CTFD.md).

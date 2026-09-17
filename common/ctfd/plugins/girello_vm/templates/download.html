@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+  <h1>La VM del {{ vm.label }}</h1>
+  <p>Ambiente Girello per Attack &amp; Defense — versione {{ version }}.</p>
+
+  <p>
+    La VM contiene Document Vault e HelpDesk, i sorgenti e la guida operativa.
+    L'indirizzo di rete configurato è <code>{{ vm.address }}</code>.
+  </p>
+
+  <p>
+    <a class="btn btn-primary"
+       href="{{ url_for('girello_vm.download') }}">
+      Scarica {{ vm.filename }}
+    </a>
+    <a class="btn btn-outline-secondary"
+       href="{{ url_for('girello_vm.checksum') }}">
+      Scarica il checksum
+    </a>
+  </p>
+
+  <p>SHA-256 atteso:</p>
+  <p class="text-break"><code>{{ vm.sha256 }}</code></p>
+
+  <h2 class="h4 mt-4">Preparazione su Debian</h2>
+
+  <ol>
+    <li>
+      Salva OVA e checksum nella stessa cartella. Apri un terminale in quella
+      cartella ed esegui:
+      <pre class="mt-2"><code>sha256sum -c {{ vm.filename }}.sha256</code></pre>
+      Prosegui se il risultato è <code>{{ vm.filename }}: OK</code>.
+    </li>
+    <li>
+      In VirtualBox scegli <strong>File → Importa applicazione virtuale</strong>
+      e seleziona l'OVA. Il PC deve supportare VM x86-64 e disporre di memoria
+      sufficiente per assegnare 4 GB alla VM.
+    </li>
+    <li>
+      Prima di avviarla, apri <strong>Impostazioni → Rete → Scheda 1</strong>.
+      Seleziona <strong>Scheda con bridge</strong>, scegli la Ethernet collegata
+      al segmento della tua squadra e abilita <strong>Cavo connesso</strong>.
+    </li>
+    <li>
+      Avvia la VM e accedi con l'utente <code>girello</code> e la password
+      comunicata dall'organizzatore. Dal Desktop apri <strong>Girello</strong>
+      e consulta <code>README.md</code>.
+    </li>
+  </ol>
+
+  <p>
+    Dentro la VM trovi Document Vault su <code>http://127.0.0.1:8081</code>
+    e HelpDesk su <code>http://127.0.0.1:8082</code>.
+    L'account del portale e l'accesso alla VM sono distinti.
+  </p>
+</div>
+{% endblock %}

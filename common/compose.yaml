@@ -28,10 +28,21 @@ services:
       REVERSE_PROXY: "1,1,1,0,0"
       UPDATE_CHECK: "false"
 
+     # ID degli utenti assegnati alle VM. 0 disabilita l'assegnazione.
+      GIRELLO_VM_TEAM1_USER_ID: ${GIRELLO_VM_TEAM1_USER_ID:-0}
+      GIRELLO_VM_TEAM2_USER_ID: ${GIRELLO_VM_TEAM2_USER_ID:-0}
     # Queste directory conservano i file anche ricreando il container.
     volumes:
       - /srv/girello/ctfd/uploads:/var/uploads
       - /srv/girello/ctfd/logs:/var/log/CTFd
+
+      # Il plugin autorizza i download; le OVA rimangono sul Master.
+      - type: bind
+        source: ./ctfd/plugins/girello_vm
+        target: /opt/CTFd/CTFd/plugins/girello_vm
+        read_only: true
+        bind:
+          create_host_path: false
 
     # CTFd viene avviato quando database e cache rispondono ai controlli.
     depends_on:
