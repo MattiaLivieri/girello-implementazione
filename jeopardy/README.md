@@ -18,31 +18,28 @@ verifica le flag e aggiorna la classifica.
 L'analisi di J1 e J2 avviene con strumenti locali. J3 viene eseguita
 in un container Docker e J4 in una VM VirtualBox sulla postazione
 del partecipante. CTFd non avvia né ripristina questi ambienti.
-Strumenti e materiali vengono predisposti prima del tempo di soluzione,
-così da consentire lo svolgimento senza accesso a Internet.
+Gli strumenti necessari vengono comunicati, installati e verificati
+prima della sessione. I materiali delle challenge diventano disponibili
+all'avvio comune; download e predisposizione degli ambienti rientrano
+nel tempo della prova.
 
 ### Preparazione e avvio della prova
 
-La sessione distingue due fasi:
+Prima della sessione gli organizzatori comunicano gli strumenti
+necessari, che i partecipanti installano e verificano sulle proprie
+postazioni.
 
-1. **Preparazione:** distribuzione dei materiali e dei `README.txt`,
-   download, estrazione degli ZIP, caricamento dell'immagine Docker,
-   importazione della VM e controlli di avvio e accesso. Per J4 comprende
-   anche la creazione dello snapshot `iniziale`.
-2. **Risoluzione:** dall'avvio ufficiale, analisi delle challenge,
-   recupero delle flag e invio delle risposte nel periodo previsto.
+Le schede e gli allegati diventano accessibili all'orario di inizio
+comune configurato in CTFd. Da quel momento i partecipanti possono
+scaricare i materiali, consultare i README, estrarre gli archivi,
+caricare l'immagine Docker di J3 e importare la VM di J4.
 
-Durante la preparazione non è consentito iniziare l'analisi delle challenge.
-Il rispetto di questa regola richiede la supervisione degli organizzatori,
-poiché i partecipanti amministrano i propri PC e dispongono già dei materiali.
+La predisposizione degli ambienti, compresa la creazione dello snapshot
+iniziale di J4, e la risoluzione delle challenge rientrano nella durata
+complessiva della sessione. Non è prevista una distribuzione anticipata
+dei materiali.
 
-Gli allegati e le istruzioni devono essere accessibili prima dell'inizio
-del tempo di risoluzione. Se gli orari impostati in CTFd ne impediscono
-il download anticipato, occorre predisporre una consegna separata
-nella rete locale oppure una fase preliminare di accesso al portale,
-verificandone il funzionamento nella configurazione utilizzata.
-L'assenza di accesso a Internet riguarda lo svolgimento della prova;
-gli strumenti e le dipendenze possono essere predisposti in precedenza.
+Durante la prova non è necessario accedere a Internet.
 
 Gli stati `Hidden` e `Visible` riguardano la visibilità delle schede.
 Il passaggio a `Visible` non sostituisce il controllo degli orari
@@ -154,8 +151,8 @@ flag, suggerimenti, account e orari nell'istanza CTFd sul Master.
 
 Il collaudo nell'ambiente di sviluppo non comprende questa integrazione.
 La verifica sul Master deve coprire i download, gli invii delle flag
-e la disponibilità anticipata dei materiali secondo la distinzione
-tra preparazione e risoluzione descritta sopra.
+e l'accessibilità delle challenge e dei materiali dall'orario
+di inizio configurato.
 
 Le procedure comuni gestiscono rete e servizi; il cambio del profilo
 del Master non importa automaticamente le challenge o i dati CTFd.

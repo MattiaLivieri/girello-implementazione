@@ -16,8 +16,13 @@ assegnato. L'accesso offline al disco virtuale è escluso dall'esercitazione.
 Strumenti
 VirtualBox su un PC x86-64 e un terminale con client SSH.
 La VM utilizza 2048 MB di RAM e un processore virtuale.
+Installa e verifica gli strumenti prima della sessione.
 
-Preparazione (prima del tempo di soluzione)
+Preparazione durante la sessione
+Scarica i materiali da CTFd all'avvio della prova.
+Il download, l'importazione e la predisposizione della VM
+rientrano nel tempo della sessione.
+
 1. Confronta il checksum SHA-256 dell'OVA con quello in SHA256SUMS,
    poi importa j4-privilegi-linux.ova in VirtualBox.
 2. Nel gestore di rete di VirtualBox prepara una rete host-only:

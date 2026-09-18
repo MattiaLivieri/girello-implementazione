@@ -305,11 +305,11 @@ La flag attesa è il valore del campo `flag` in
 `artifacts/j2/private/scenario.properties`, relativo al JAR collaudato.
 Il file privato non viene allegato alla challenge.
 
-La distribuzione nel laboratorio segue la distinzione tra
-[preparazione e avvio della prova](../../README.md#preparazione-e-avvio-della-prova):
-materiali e istruzioni devono essere accessibili prima del tempo
-di risoluzione. Il passaggio a `Visible` non basta se gli orari
-configurati impediscono il download anticipato.
+La distribuzione segue le [regole comuni della sessione](../../README.md#preparazione-e-avvio-della-prova):
+schede, materiali e istruzioni diventano accessibili all'avvio comune.
+Download e predisposizione dell'ambiente rientrano nel tempo della prova.
+Le schede devono essere impostate su `Visible` e gli orari della sessione
+devono essere configurati in CTFd.
 
 ### Descrizione per i partecipanti
 

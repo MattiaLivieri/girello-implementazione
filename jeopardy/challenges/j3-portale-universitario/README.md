@@ -527,11 +527,11 @@ La flag attesa deve corrispondere alla configurazione privata
 in `artifacts/j3/private/scenario.json` relativa all'immagine collaudata.
 Il valore effettivo non viene riportato in questo README.
 
-La distribuzione nel laboratorio segue la distinzione tra
-[preparazione e avvio della prova](../../README.md#preparazione-e-avvio-della-prova):
-materiali e istruzioni devono essere accessibili prima del tempo
-di risoluzione. Il passaggio a `Visible` non basta se gli orari
-configurati impediscono il download anticipato.
+La distribuzione segue le [regole comuni della sessione](../../README.md#preparazione-e-avvio-della-prova):
+schede, materiali e istruzioni diventano accessibili all'avvio comune.
+Download e predisposizione dell'ambiente rientrano nel tempo della prova.
+Le schede devono essere impostate su `Visible` e gli orari della sessione
+devono essere configurati in CTFd.
 
 ### Descrizione per i partecipanti
 

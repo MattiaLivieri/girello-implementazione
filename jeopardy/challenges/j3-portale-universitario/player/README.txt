@@ -6,11 +6,16 @@ Un documento riservato a un altro personaggio contiene la flag.
 Individua il problema nell'accesso ai documenti e recupera la risposta.
 Tutti i personaggi e i dati appartengono a questa copia locale.
 
-PREPARAZIONE (PRIMA DEL TEMPO DI SOLUZIONE)
+STRUMENTI DA INSTALLARE E VERIFICARE PRIMA DELLA SESSIONE
 Occorrono Docker con motore Linux amd64, Docker Compose e un browser.
 Su Windows utilizzare Docker Desktop in modalità Linux containers.
 L'immagine contiene già le dipendenze e le risorse web.
 Non occorre installare Python e non serve Internet durante la prova.
+
+PREPARAZIONE DURANTE LA SESSIONE
+Scaricare i materiali da CTFd all'avvio della prova.
+Il download, il caricamento dell'immagine e l'avvio del portale
+rientrano nel tempo della sessione.
 
 Materiali della distribuzione finale:
 - j3-portale-universitario.tar
