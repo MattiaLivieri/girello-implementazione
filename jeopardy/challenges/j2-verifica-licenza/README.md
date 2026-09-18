@@ -321,9 +321,9 @@ Un programma verifica un codice di licenza prima di consentire
 l'accesso. Il controllo e i dati necessari alla verifica sono
 contenuti nel JAR.
 
-Durante la preparazione scarica ed estrai `j2-verifica-licenza.zip`
-e leggi `README.txt`. All'avvio della prova, analizza
-`verifica-licenza.jar` e ricostruisci il codice accettato.
+Dall'avvio della prova scarica ed estrai `j2-verifica-licenza.zip`,
+leggi `README.txt`, analizza `verifica-licenza.jar`
+e ricostruisci il codice accettato.
 
 Il codice ha formato `XXXX-XXXX-XXXX`: ogni X rappresenta una
 lettera ASCII o una cifra. I trattini sono obbligatori e gli
