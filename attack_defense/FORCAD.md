@@ -69,8 +69,9 @@ proxy HTTP del Master. Il database PostgreSQL usa un volume del
 progetto `girello-ad`, indipendente dai dati della prova iniziale.
 
 La configurazione predispone il percorso verso i servizi dei team.
-La verifica attraverso i proxy e l'avvio dei round appartengono
-al successivo blocco di integrazione.
+Gli esiti della verifica attraverso i proxy e dell'avvio dei round
+sono documentati nella sezione
+[Prova integrata](distribution/README.md#prova-integrata--17-settembre-2026).
 
 ## Checker di HelpDesk
 

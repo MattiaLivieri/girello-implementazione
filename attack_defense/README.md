@@ -170,5 +170,6 @@ non è un limite alla durata complessiva del processo, gestita da ForcAD.
 Le risposte vengono lette fino a un massimo di 128 KiB.
 
 Il checker è un componente della gestione centrale e non viene incluso
-nelle VM distribuite ai team. L'installazione nel worker ForcAD e il suo
-collegamento ai proxy appartengono al blocco di integrazione successivo.
+nelle VM distribuite ai team. Gli esiti della verifica del checker
+attraverso i proxy sono documentati nella sezione
+[Prova integrata](distribution/README.md#prova-integrata--17-settembre-2026).

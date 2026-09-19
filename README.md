@@ -39,11 +39,8 @@ Master, `jeopardy` e `ad` per le rispettive esercitazioni.
 | `common/` | Servizi del Master, configurazioni di rete, Nginx e script comuni. |
 | [jeopardy/](jeopardy/README.md) | Sorgenti, materiali e istruzioni delle challenge. |
 | `attack_defense/` | Servizi vulnerabili, checker e gestione dell'esercitazione. |
-| `docs/` | Preparazione del sistema, procedure operative e resoconti delle verifiche. |
-
 
 ## Criteri di sviluppo
-
 
 Le configurazioni di rete e Nginx sono conservate in file statici.
 La preparazione iniziale viene documentata attraverso istruzioni

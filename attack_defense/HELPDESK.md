@@ -160,8 +160,9 @@ Build Docker, avvio del container e risposta di `/health` sono stati
 verificati nella VM di sviluppo.
 
 I test non sono inclusi nella repository in questa fase.
-La validazione nelle VM definitive e l'integrazione con il checker ForcAD
-sono attività successive.
+Gli esiti delle verifiche nelle VM delle squadre e dell'integrazione
+con il checker ForcAD sono documentati nella sezione
+[Prova integrata](distribution/README.md#prova-integrata--17-settembre-2026).
 
 ## Interfaccia web
 

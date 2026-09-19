@@ -247,6 +247,8 @@ Quindi verificare e attivare Nginx:
 
 ```bash
 sudo systemctl enable nginx.service
+sudo install -m 0644 common/nginx/vm-downloads.conf \
+  /etc/nginx/snippets/girello-vm-downloads.conf
 sudo nginx -t && sudo systemctl restart nginx.service
 ```
 
