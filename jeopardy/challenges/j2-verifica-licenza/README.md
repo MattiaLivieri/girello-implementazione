@@ -227,10 +227,14 @@ la configurazione privata. Dopo la creazione riapre lo ZIP e verifica
 i nomi e i byte delle voci. Un pacchetto esistente con contenuto diverso
 non viene sovrascritto.
 
-Il pacchetto collaudato ha dimensione **4199 byte** e SHA256:
+| File distribuito | Dimensione |
+| --- | ---: |
+| `j2-verifica-licenza.zip` | 4 153 byte |
+
+SHA-256 del pacchetto:
 
 ```text
-e88fcc3d3ebb38301ffa3ca1c270509a35533dba557a867aa3c609ce7d317a6c
+c9a4130570cbe2424842d5826f5a148cacfefa9047847138f4ea2bf87ef44f93
 ```
 
 Il checksum esterno è conservato in
@@ -248,7 +252,7 @@ in PowerShell. Non ricostruisce né modifica i materiali.
 & {
     $ErrorActionPreference = "Stop"
     $j2Zip = ".\artifacts\j2\release\j2-verifica-licenza.zip"
-    $j2Expected = "e88fcc3d3ebb38301ffa3ca1c270509a35533dba557a867aa3c609ce7d317a6c"
+    $j2Expected = "c9a4130570cbe2424842d5826f5a148cacfefa9047847138f4ea2bf87ef44f93"
     if (-not (Test-Path -LiteralPath $j2Zip -PathType Leaf)) {
         throw "Pacchetto j2 mancante."
     }

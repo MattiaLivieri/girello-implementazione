@@ -16,8 +16,8 @@ un documento che non compare nel proprio elenco. Questa vulnerabilità
 
 Il portale viene eseguito in un container sul PC del partecipante.
 Nell'assetto del laboratorio, CTFd sul Master distribuisce i materiali,
-presenta i suggerimenti e riceve la flag. La preparazione dell'ambiente
-avviene prima dell'inizio del tempo di risoluzione.
+presenta i suggerimenti e riceve la flag. Il download e la predisposizione dell'ambiente avvengono
+dall'avvio della prova e rientrano nella durata della sessione.
 
 Questo README documenta il lavoro degli autori e contiene dettagli
 del percorso di soluzione. Le istruzioni distribuite ai partecipanti
@@ -259,12 +259,12 @@ mancante restano da valutare con partecipanti.
 Il rilascio collaudato è conservato in `artifacts/j3/release/` e comprende
 quattro file separati, senza un ulteriore archivio ZIP:
 
-| File | Contenuto | Dimensione del rilascio verificato |
-| --- | --- | --- |
+| File | Contenuto | Dimensione |
+| --- | --- | ---: |
 | `j3-portale-universitario.tar` | Immagine Docker esportata. | 46 330 880 byte |
-| `compose.yaml` | Copia della configurazione in `player/`. | 850 byte |
-| `README.txt` | Copia delle istruzioni in `player/`. | 2 073 byte |
-| `SHA256SUMS` | Impronte SHA-256 dei tre file precedenti. | 254 byte |
+| `compose.yaml` | Configurazione di avvio. | 850 byte |
+| `README.txt` | Istruzioni del partecipante. | 2 277 byte |
+| `SHA256SUMS` | Impronte SHA-256 dei tre file precedenti. | 251 byte |
 
 L'esportazione è stata eseguita con `docker image save` dopo aver
 confrontato l'identificativo dell'immagine con il rapporto di build.
@@ -283,7 +283,8 @@ e recupero della stessa flag attraverso il documento `1002`.
 Il partecipante segue `README.txt`: carica l'immagine con `docker load`,
 avvia il portale mediante il Compose consegnato e accede dal browser
 locale. Non deve eseguire `Build.ps1` né costruire l'applicazione dai
-sorgenti. La preparazione precede il tempo dedicato alla soluzione.
+sorgenti. Il caricamento dell'immagine e l'avvio del portale rientrano
+nel tempo della prova.
 
 I quattro allegati scaricati dal CTFd di sviluppo sono stati confrontati
 tramite SHA-256 con gli originali in `release/`: tutti coincidevano,

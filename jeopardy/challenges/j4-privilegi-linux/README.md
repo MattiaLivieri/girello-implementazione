@@ -11,8 +11,9 @@ La possibilità di eseguire `/usr/bin/find` come root senza password
 è una proprietà intenzionale dello scenario.
 
 La VM viene eseguita sul PC del partecipante con una rete VirtualBox
-host-only. La preparazione dell'ambiente avviene prima dell'inizio
-del tempo di risoluzione.
+host-only. Il download, l'importazione e la predisposizione della VM
+avvengono dall'avvio della prova e rientrano nella durata
+della sessione.
 
 Questo documento contiene i dettagli tecnici destinati agli autori.
 Le istruzioni distribuite ai partecipanti sono contenute nel relativo
@@ -291,13 +292,13 @@ restano da valutare.
 
 Il rilascio contiene tre file separati:
 
-| File | Funzione |
-| --- | --- |
-| `j4-privilegi-linux.ova` | Guest configurato, con descrittore OVF 2.0 e manifest. |
-| `README.txt` | Istruzioni di preparazione, accesso e ripristino per il partecipante. |
-| `SHA256SUMS` | Impronta SHA-256 dell'OVA collaudata. |
+| File | Funzione | Dimensione |
+| --- | --- | ---: |
+| `j4-privilegi-linux.ova` | Macchina virtuale della challenge. | 1 149 221 376 byte |
+| `README.txt` | Istruzioni di preparazione, accesso e ripristino. | 2 895 byte |
+| `SHA256SUMS` | Impronta SHA-256 dell'OVA. | 89 byte |
 
-L'OVA non viene racchiusa in un ulteriore archivio ZIP. Il README
+L'OVA ha una dimensione di circa 1,07 GiB. Il README
 accompagna l'appliance come file separato; non viene inserito nel disco
 virtuale e non richiede di modificare la VM.
 
@@ -342,8 +343,9 @@ Il confronto del README con la copia scaricata rimane separato.
 Il manifest incluso nell'OVA è distinto dal file `SHA256SUMS`
 distribuito come allegato.
 
-Prima dell'esercitazione il partecipante verifica il checksum, importa
-l'OVA e collega la sola scheda di rete alla rete host-only dedicata.
+Dall'avvio della prova il partecipante scarica i materiali,
+verifica il checksum, importa l'OVA e collega la sola scheda
+di rete alla rete host-only dedicata.
 L'interfaccia host utilizza `192.168.56.1/24`, il guest mantiene
 `192.168.56.10/24` e il DHCP VirtualBox viene disabilitato.
 La sottorete deve essere verificata rispetto alle altre reti del PC.
@@ -354,7 +356,7 @@ Non si avviano contemporaneamente più copie con lo stesso indirizzo
 sulla stessa rete host-only.
 
 Dopo l'importazione e la configurazione della rete si crea lo snapshot
-`iniziale` a VM spenta, prima dell'avvio della prova. Gli snapshot della VM
+`iniziale` a VM spenta, prima di iniziare la soluzione. Gli snapshot della VM
 di costruzione non vengono distribuiti come albero di snapshot nell'OVA.
 Per ricominciare si spegne la VM e si ripristina lo snapshot `iniziale`.
 
@@ -514,8 +516,8 @@ Per ogni successiva modifica alle istruzioni occorre aggiornare
 la copia distribuita e controllarne il download e la leggibilità.
 L'importazione e la soluzione della VM già collaudata non devono
 essere ripetute per una modifica al solo README.
-Le istruzioni e le credenziali del guest devono essere disponibili
-prima dell'inizio del tempo di risoluzione.
+Le istruzioni e le credenziali del guest sono contenute
+nel README distribuito con i materiali all'avvio della prova.
 
 La copia privata di `flag.txt`, lo script di configurazione e questo
 README tecnico non vengono allegati alla challenge.

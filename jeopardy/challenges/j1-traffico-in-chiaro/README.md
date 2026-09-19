@@ -170,14 +170,17 @@ contenente esclusivamente:
 - `README.txt`;
 - `SHA256SUMS`, con gli hash dei due file precedenti.
 
-Il pacchetto verificato ha una dimensione di 3 971 byte.
+| File distribuito | Dimensione |
+| --- | ---: |
+| `j1-traffico-in-chiaro.zip` | 3 984 byte |
+
 Il suo checksum viene salvato separatamente
 in `j1-traffico-in-chiaro.zip.sha256`.
 
 SHA-256 del pacchetto verificato:
 
 ```text
-70985dd05c6f613a78453a43c8ee613e7f7d03ea016b8833ac81608ded68f543
+5e10eb7196a7a467fe8abefa22d425c46c958a82f478933f69ce4dc574506592
 ```
 
 `package.py` richiede l'hash del PCAP validato, controlla i file
@@ -204,7 +207,7 @@ in PowerShell. Non ricostruisce né modifica i materiali.
 & {
     $ErrorActionPreference = "Stop"
     $j1Zip = ".\artifacts\j1\release\j1-traffico-in-chiaro.zip"
-    $j1Expected = "70985dd05c6f613a78453a43c8ee613e7f7d03ea016b8833ac81608ded68f543"
+    $j1Expected = "5e10eb7196a7a467fe8abefa22d425c46c958a82f478933f69ce4dc574506592"
     if (-not (Test-Path -LiteralPath $j1Zip -PathType Leaf)) {
         throw "Pacchetto j1 mancante."
     }
@@ -280,8 +283,8 @@ l'accesso al servizio e per proteggere l'archivio trasferito.
 Analizza `traffico.pcap`, ricostruisci il documento trasferito e recupera
 la flag contenuta al suo interno.
 
-Durante la preparazione scarica ed estrai `j1-traffico-in-chiaro.zip`
-e leggi `README.txt`. Inizia l'analisi soltanto all'avvio della prova.
+Dall'avvio della prova scarica ed estrai `j1-traffico-in-chiaro.zip`,
+leggi `README.txt` e analizza `traffico.pcap`.
 Lo ZIP di distribuzione si estrae senza password; l'archivio presente
 nel traffico richiede invece la password da recuperare.
 
@@ -301,7 +304,7 @@ L'unico allegato da caricare su CTFd è:
 SHA-256 del pacchetto validato:
 
 ```text
-70985dd05c6f613a78453a43c8ee613e7f7d03ea016b8833ac81608ded68f543
+5e10eb7196a7a467fe8abefa22d425c46c958a82f478933f69ce4dc574506592
 ```
 
 Il file esterno `j1-traffico-in-chiaro.zip.sha256` viene conservato
